@@ -30,14 +30,21 @@ class Board {
 
   }
 
-  def checkIfMoveCorrect(moves:(String, String)): Boolean = {
+  def checkIfMoveCorrect(moves:String): Boolean = {
         return true // TODO checking if move is correct
   }
 
-  def makeMove(moves:(String, String)) : Unit ={
+  def makeMoveSequence(moves: String): Unit ={
     if (!checkIfMoveCorrect(moves)){
       return; //TODO error checking (throwing exception?)
     }
+    var positionsList = moves.split(" ");
+    for (i<-1 to (positionsList.length-1)){
+      makeMove(positionsList(i-1), positionsList(i))
+    }
+  }
+  def makeMove(moves:(String, String)) : Unit ={
+
     var i1 = moves._1.charAt(0).asDigit;
     var j1 = moves._1.charAt(1).asDigit;
     var i2 = moves._2.charAt(0).asDigit;
