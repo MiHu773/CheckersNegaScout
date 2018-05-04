@@ -31,13 +31,10 @@ class Board {
   }
 
   def checkIfMoveCorrect(moves:String): Boolean = {
-        return true // TODO checking if move is correct
+        return true; // TODO checking if move is correct
   }
 
   def makeMoveSequence(moves: String): Unit ={
-    if (!checkIfMoveCorrect(moves)){
-      return; //TODO error checking (throwing exception?)
-    }
     var positionsList = moves.split(" ");
     for (i<-1 to (positionsList.length-1)){
       makeMove(positionsList(i-1), positionsList(i))
@@ -82,7 +79,6 @@ class Board {
   }
 
   def checkIfChangeToQueen(i: Int, value: Type.Type): Type ={
-    System.out.print(i);
     if (i==7 && value == black) {
       blacks-=1;
       blacksQ+=1;
@@ -114,5 +110,16 @@ class Board {
       }
       println();
     }
+  }
+
+  def isFinished(): Boolean ={
+    if ((whitesQ + whites == 0) || (blacks + blacksQ == 0)){
+      return true;
+    }
+    return false;
+  }
+
+  def getAllPossibleMoves(): List[String] ={
+    return List("20 31", "22 33");
   }
 }
