@@ -30,9 +30,38 @@ class Board {
 
   }
 
+  def checkIfMoveCorrect(moves:(String, String)): Boolean = {
+        return true // TODO checking if move is correct
+  }
 
+  def makeMove(moves:(String, String)) : Unit ={
+    if (!checkIfMoveCorrect(moves)){
+      return; //TODO error checking (throwing exception?)
+    }
+    var i1 = moves._1.charAt(0).asDigit;
+    var j1 = moves._1.charAt(1).asDigit;
+    var i2 = moves._2.charAt(0).asDigit;
+    var j2 = moves._2.charAt(1).asDigit;
+    var movedType = board(i1)(j1).elementType;
+    board(i1)(j1).setType(null);
+    board(i2)(j2).setType(movedType);
+    if (math.abs(i1-i2)>1){ //jump
+      if ((i2 > i1) && (j2>j1)){
+        board(i1+1)(j1+1).setType(null);
+      } else if ((i2 > i1) && (j2<j1)){
+        board(i1+1)(j1-1).setType(null);
+      } else if ((i2 < i1) && (j2>j1)){
+        board(i1-1)(j1+1).setType(null);
+      } else {
+        board(i1-1)(j1-1).setType(null);
+      }
+    }
+
+  }
   def printBoard() : Unit = {
+    println("  0 1 2 3 4 5 6 7");
     for (i <- 0 to (board.length-1)){
+      print (i);
       for (j <- 0 to (board.length-1)) {
         print(" "+ board(i)(j).printElement());
       }

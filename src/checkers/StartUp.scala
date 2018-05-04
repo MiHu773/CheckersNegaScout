@@ -5,5 +5,12 @@ object StartUp {
     var board = new Board();
     board.setUpBoard();
     board.printBoard();
+
+    while (true) {
+      print("Enter move: "); // input form ex. 60 51
+      var input = readf2("{0} {1}").asInstanceOf[(String, String)];
+      board.makeMove(input);
+      board.printBoard();
+    }
   }
 }
