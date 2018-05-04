@@ -7,6 +7,7 @@ object StartUp {
     board.printBoard();
 
     while (true) {
+      print(board.possibleMoves("5", "1"))
       print("Enter move: "); // input form ex. 60 51
       var input = readf2("{0} {1}").asInstanceOf[(String, String)];
       board.makeMove(input);
