@@ -44,27 +44,67 @@ class Board {
     }
   }
   def makeMove(moves:(String, String)) : Unit ={
-
     var i1 = moves._1.charAt(0).asDigit;
     var j1 = moves._1.charAt(1).asDigit;
     var i2 = moves._2.charAt(0).asDigit;
     var j2 = moves._2.charAt(1).asDigit;
     var movedType = board(i1)(j1).elementType;
-    board(i1)(j1).setType(null);
+    movedType = checkIfChangeToQueen(i2, movedType);
     board(i2)(j2).setType(movedType);
     if (math.abs(i1-i2)>1){ //jump
-      if ((i2 > i1) && (j2>j1)){
-        board(i1+1)(j1+1).setType(null);
+      if ((i2 > i1) && (j2>j1)){//TODO nie petla w petli tylko jedna petla!
+        var j = j1;
+        for (i <- i1 to (i2-1)){
+           removeTile(i,j);
+           j+=1;
+        }
       } else if ((i2 > i1) && (j2<j1)){
-        board(i1+1)(j1-1).setType(null);
+        var j = j1;
+        for (i <- i1 to (i2-1)){
+            removeTile(i,j);
+            j-=1;
+        }
       } else if ((i2 < i1) && (j2>j1)){
-        board(i1-1)(j1+1).setType(null);
+        var j = j2-1;
+        for (i <- (i2+1) to i1){
+            removeTile(i,j);
+            j-=1;
+        }
       } else {
-        board(i1-1)(j1-1).setType(null);
+        var j = j2+1;
+        for (i <- (i2+1) to i1){
+            removeTile(i,j);
+            j+=1;
+        }
       }
-    }
+    } else board(i1)(j1).setType(null);
 
   }
+
+  def checkIfChangeToQueen(i: Int, value: Type.Type): Type ={
+    System.out.print(i);
+    if (i==7 && value == black) {
+      blacks-=1;
+      blacksQ+=1;
+      return blackQueen;
+    }
+    else if (i==0 && value == white){
+      whites-=1;
+      whitesQ+=1;
+      return whiteQueen;
+    }
+    return value;
+  }
+
+
+  def removeTile(i: Int,j: Int): Unit = {
+    if (board(i)(j).elementType == black) blacks-=1;
+    if (board(i)(j).elementType == blackQueen) blacksQ-=1;
+    if (board(i)(j).elementType == white) whites-=1;
+    if (board(i)(j).elementType == whiteQueen) whitesQ-=1;
+    board(i)(j).setType(null);
+  }
+
   def printBoard() : Unit = {
     println("  0 1 2 3 4 5 6 7");
     for (i <- 0 to (board.length-1)){
