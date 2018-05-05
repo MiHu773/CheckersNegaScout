@@ -2,6 +2,7 @@ package checkers
 import checkers.Type._
 
 import scala.collection.mutable.Queue
+import src.Move
 class Board {
   var board = Array.ofDim[Element](8,8);
   var whites, blacks, whitesQ, blacksQ=0;
@@ -114,7 +115,7 @@ class Board {
 
   }
   def possibleMoves( position:(String, String)/*, moves:Queue[Queue [(String, String)]]*/) : Queue[(String, String)] = {
-    var queue = Queue[(String, String)]()
+    var queue = Queue[Move]()
 //    val aux = new (String, String)()
     val el : Element = board(position._1.toInt) (position._2.toInt)
     var nextRow : Int = 0
@@ -183,13 +184,13 @@ class Board {
 //  ================================================================================================================================================================================================
     if (pozMNL._2<=7 && pozMNL._2>= 0 && checkedMNL == "-" ) //jeśli pole po skosie jest wolne
     {
-      val aux = (pozMNL._1.toString, pozMNL._2.toString)
+      val aux = new Move((position._1.toInt, position._2.toInt), (pozMNL._1, pozMNL._2))
       queue.enqueue(aux)
     }
 
     if (pozMNR._2<=7 && pozMNR._2>= 0 && checkedMNR == "-" ) //jeśli pole po skosie jest wolne
     {
-      val aux = (pozMNR._1.toString, pozMNR._2.toString)
+      val aux = new Move((position._1.toInt, position._2.toInt), (pozMNR._1, pozMNR._2))
       queue.enqueue(aux)
     }
 //    ================================================================================================================================================================================================
@@ -198,13 +199,13 @@ class Board {
 
     if (pozJmpNL._2<=7 && pozJmpNL._2>= 0 && (checkedMNL == other ||  checkedMNL == otherQ) &&  checkedJmpNL == "-") //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
     {
-      val aux = (pozJmpNL._1.toString, pozJmpNL._2.toString)
+      val aux = new Move((position._1.toInt, position._2.toInt), (pozJmpNL._1, pozJmpNL._2), true, (pozMNL._1, pozMNL._2))
       queue.enqueue(aux)
     }
 
     if (pozJmpNR._2<=7 && pozJmpNR._2>= 0 && (checkedMNR == other ||  checkedMNR == otherQ) &&  checkedJmpNR == "-") //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
     {
-      val aux = (pozJmpNR._1.toString, pozJmpNR._2.toString)
+      val aux = new Move((position._1.toInt, position._2.toInt), (pozJmpNR._1, pozJmpNR._2), true, (pozMNR._1, pozMNR._2))
       queue.enqueue(aux)
     }
     //    ================================================================================================================================================================================================
@@ -213,13 +214,13 @@ class Board {
     
     if (pozJmpPL._2<=7 && pozJmpPL._2>= 0 && (checkedMPL == other ||  checkedMPL == otherQ) &&  checkedJmpPL == "-") //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
     {
-      val aux = (pozJmpPL._1.toString, pozJmpPL._2.toString)
+      val aux = new Move((position._1.toInt, position._2.toInt), (pozJmpPL._1, pozJmpPL._2), true, (pozMPL._1, pozMPL._2))
       queue.enqueue(aux)
     }
 
     if (pozJmpPR._2<=7 && pozJmpPR._2>= 0 && (checkedMPR == other ||  checkedMPR == otherQ) &&  checkedJmpPR == "-") //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
     {
-      val aux = (pozJmpPR._1.toString, pozJmpPR._2.toString)
+      val aux = new Move((position._1.toInt, position._2.toInt), (pozJmpPR._1, pozJmpPR._2), true, (pozMPR._1, pozMPR._2))
       queue.enqueue(aux)
     }
 
