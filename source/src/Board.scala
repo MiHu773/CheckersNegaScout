@@ -7,6 +7,59 @@ class Board {
   var whites, blacks, whitesQ, blacksQ=0;
   //Queue[String];
 
+  def setUpBoard1() : Unit = {
+    whites = 1;
+    blacks = 4;
+    whitesQ = 0;
+    blacksQ = 0;
+    for (i <- 0 to (board.length-1)){
+      for (j <- 0 to (board.length-1)) {
+        board(i)(j) = new Element();
+      }
+    }
+    board(4)(2).setType(white)
+
+    board(3)(3).setType(black)
+    board(3)(1).setType(black)
+    board(5)(1).setType(black)
+    board(5)(3).setType(black)
+  }
+
+  def setUpBoard2() : Unit = {
+    whites = 1;
+    blacks = 4;
+    whitesQ = 0;
+    blacksQ = 0;
+    for (i <- 0 to (board.length-1)){
+      for (j <- 0 to (board.length-1)) {
+        board(i)(j) = new Element();
+      }
+    }
+    board(4)(2).setType(black)
+
+    board(3)(3).setType(black)
+    board(3)(1).setType(black)
+    board(5)(1).setType(black)
+    board(5)(3).setType(black)
+  }
+
+  def setUpBoard3() : Unit = {
+    whites = 1;
+    blacks = 4;
+    whitesQ = 0;
+    blacksQ = 0;
+    for (i <- 0 to (board.length-1)){
+      for (j <- 0 to (board.length-1)) {
+        board(i)(j) = new Element();
+      }
+    }
+    board(4)(2).setType(black)
+
+    board(3)(3).setType(white)
+    board(3)(1).setType(white)
+    board(5)(1).setType(white)
+    board(5)(3).setType(white)
+  }
   def setUpBoard() : Unit = {
     whites = 12;
     blacks = 12;
@@ -60,73 +113,126 @@ class Board {
     }
 
   }
-  def possibleMoves( position:(String, String)/*, moves:(String, String)*/) : Queue[(String, String)] = {
+  def possibleMoves( position:(String, String)/*, moves:Queue[Queue [(String, String)]]*/) : Queue[(String, String)] = {
     var queue = Queue[(String, String)]()
 //    val aux = new (String, String)()
     val el : Element = board(position._1.toInt) (position._2.toInt)
     var nextRow : Int = 0
     var previousRow : Int = 0
-    var nextColumn0 = position._2.toInt - 1
-    var nextColumn1 = position._2.toInt + 1
+    var nextColumnL = position._2.toInt - 1
+    var nextColumnR = position._2.toInt + 1
+
+    var other : String =""
+    var otherQ : String =""
+
+    var pozJmpNL:(Int, Int) = (0, 0)
+    var pozJmpNR:(Int, Int) = (0, 0)
+    var pozJmpPL:(Int, Int) = (0, 0)
+    var pozJmpPR:(Int, Int) = (0, 0)
+
+    var pozMNL:(Int, Int) = (0, 0)
+    var pozMNR:(Int, Int) = (0, 0)
+    var pozMPL:(Int, Int) = (0, 0)
+    var pozMPR:(Int, Int) = (0, 0)
+
+    var direction:Int = 0
 
     if (el.elementType== `white`)
     {
       nextRow = (position._1.toInt - 1)
       previousRow = (position._1.toInt + 1)
+      other = "o"
+      otherQ = "O"
+      direction = -1
     }
     else if (el.elementType== `black`)
     {
       nextRow = (position._1.toInt + 1)
       previousRow = (position._1.toInt - 1)
+      other = "x"
+      otherQ = "X"
+      direction = 1
     }
       //case _ => queue
-      nextRow = position._1.toInt-1
-      nextColumn0 = position._2.toInt-1
-      nextColumn1 = position._2.toInt+1
+//    nextRow = position._1.toInt-1
+    nextColumnL = position._2.toInt-1
+    nextColumnR = position._2.toInt+1
+
+    pozMNL = (nextRow, nextColumnL)
+    pozMNR = (nextRow, nextColumnR)
+    pozMPL = (previousRow, nextColumnL)
+    pozMPR = (previousRow, nextColumnR)
+    
+    pozJmpNL = (nextRow+direction, nextColumnL-1)
+    pozJmpNR = (nextRow+direction, nextColumnR+1)
+    pozJmpPL = (previousRow-direction, nextColumnL-1)
+    pozJmpPR = (previousRow-direction, nextColumnR+1)
+
+    val checkedMNL =  check(pozMNL)
+    val checkedMNR =  check(pozMNR)
+    val checkedMPL =  check(pozMPL)
+    val checkedMPR =  check(pozMPR)
+
+    val checkedJmpNL =  check(pozJmpNL)
+    val checkedJmpNR =  check(pozJmpNL)
+    val checkedJmpPL =  check(pozJmpPL)
+    val checkedJmpPR =  check(pozJmpPR)
+
+//  ================================================================================================================================================================================================
+//  przesuwanie po skosie na wolne pole
+//  ================================================================================================================================================================================================
+    if (pozMNL._2<=7 && pozMNL._2>= 0 && checkedMNL == "-" ) //jeśli pole po skosie jest wolne
+    {
+      val aux = (pozMNL._1.toString, pozMNL._2.toString)
+      queue.enqueue(aux)
+    }
+
+    if (pozMNR._2<=7 && pozMNR._2>= 0 && checkedMNR == "-" ) //jeśli pole po skosie jest wolne
+    {
+      val aux = (pozMNR._1.toString, pozMNR._2.toString)
+      queue.enqueue(aux)
+    }
+//    ================================================================================================================================================================================================
+//    bicie po skosie w kierunku przeciwnika
+//    ================================================================================================================================================================================================
+
+    if (pozJmpNL._2<=7 && pozJmpNL._2>= 0 && (checkedMNL == other ||  checkedMNL == otherQ) &&  checkedJmpNL == "-") //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
+    {
+      val aux = (pozJmpNL._1.toString, pozJmpNL._2.toString)
+      queue.enqueue(aux)
+    }
+
+    if (pozJmpNR._2<=7 && pozJmpNR._2>= 0 && (checkedMNR == other ||  checkedMNR == otherQ) &&  checkedJmpNR == "-") //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
+    {
+      val aux = (pozJmpNR._1.toString, pozJmpNR._2.toString)
+      queue.enqueue(aux)
+    }
+    //    ================================================================================================================================================================================================
+    //    bicie po skosie w kierunku swoim
+    //    ================================================================================================================================================================================================
+    
+    if (pozJmpPL._2<=7 && pozJmpPL._2>= 0 && (checkedMPL == other ||  checkedMPL == otherQ) &&  checkedJmpPL == "-") //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
+    {
+      val aux = (pozJmpPL._1.toString, pozJmpPL._2.toString)
+      queue.enqueue(aux)
+    }
+
+    if (pozJmpPR._2<=7 && pozJmpPR._2>= 0 && (checkedMPR == other ||  checkedMPR == otherQ) &&  checkedJmpPR == "-") //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
+    {
+      val aux = (pozJmpPR._1.toString, pozJmpPR._2.toString)
+      queue.enqueue(aux)
+    }
 
 
-        if (nextRow>=0 || nextRow <= 7)
-        {
 
-          if (nextColumn0<=7 && nextColumn0>= 0 && checkIfFree((nextRow.toString, nextColumn0.toString))) //jeśli pola po skosie są wolne
-          {
-            val aux = (nextRow.toString, nextColumn0.toString)
-            queue.enqueue(aux)
-          }
+  /*  for (groupOfMoves <- queue)
+      {
+        aux =
+        moves.enqueue(groupOfMoves)
+        possibleMoves(groupOfMoves, moves)
 
-          if (nextColumn1<=7 && nextColumn1>= 0 && checkIfFree((nextRow.toString, nextColumn1.toString)))
-          {
-            val aux = (nextRow.toString, nextColumn1.toString)
-            queue.enqueue((nextRow.toString, nextColumn1.toString))
-          }
-
-          if (nextColumn0-1<=7 && nextColumn0-1>=0 && checkIfFree(((nextRow+1).toString, (nextColumn0-1).toString))) //jeśli pola po skosie są wolne
-          {
-            val aux = ((nextRow+1).toString, (nextColumn0-1).toString)
-            queue.enqueue(aux)
-          }
-
-          if (nextColumn1+1<=7 && nextColumn1+1>=0 && checkIfFree(((nextRow-1).toString, (nextColumn1+1).toString))) //jeśli pola po skosie są wolne
-          {
-            val aux = ((nextRow-1).toString, (nextColumn1+1).toString)
-            queue.enqueue(aux)
-          }
-
-          if (nextColumn0-1<=7 && nextColumn0-1>=0  && checkIfFree(((previousRow+1).toString, (nextColumn0-1).toString))) //jeśli pola po skosie są wolne
-          {
-            val aux = ((previousRow+1).toString, (nextColumn0-1).toString)
-            queue.enqueue(aux)
-          }
-
-          if (nextColumn1+1<=7 && nextColumn1+1>=0 && checkIfFree(((previousRow+1).toString, (nextColumn1+1).toString))) //jeśli pola po skosie są wolne
-          {
-            val aux = ((previousRow+1).toString, (nextColumn1+1).toString)
-            queue.enqueue(aux)
-          }
-        }
-
-
-        return queue
+      }*/
+    return queue
     }
       /*case `whiteQueen` => "X"
       case `black` => "o"
@@ -134,13 +240,31 @@ class Board {
 
 
 
-  def checkIfFree(position:(String, String)) : Boolean = {
+  def check(position:(Int, Int)/*, other:String*/) : String = {
     val toCheck : Element= board(position._1.toInt) (position._2.toInt);
-    if (toCheck.elementType == null)
-      true;
-    else false;
-
+    if (position._1<0 || position._2>7 || position._2>7 || position._2<0)
+      {
+        return "?"
+      }
+    else if (toCheck.elementType == null)
+      {
+        return "-"
+      }
+    else if(toCheck.elementType == white )
+    {
+      return "x"
+    }
+    else if(toCheck.elementType == black )
+    {
+      return "o"
+    }
+    else if(toCheck.elementType == whitesQ )
+    {
+      return "X"
+    }
+    else return "O"
   }
+
   def printBoard() : Unit = {
     println("  0 1 2 3 4 5 6 7");
     for (i <- 0 to (board.length-1)){
