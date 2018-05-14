@@ -2,13 +2,12 @@ package checkers
 import checkers.Type._
 
 import scala.collection.mutable.Queue
-import src.Move
+import src.{Move, MoveSet}
 class Board {
-  var board = Array.ofDim[Element](8,8);
-  var whites, blacks, whitesQ, blacksQ=0;
+
   //Queue[String];
 
-  def setUpBoard1() : Unit = {
+ def setUpBoard1() : Unit = {
     whites = 1;
     blacks = 4;
     whitesQ = 0;
@@ -163,7 +162,7 @@ class Board {
     pozMNR = (nextRow, nextColumnR)
     pozMPL = (previousRow, nextColumnL)
     pozMPR = (previousRow, nextColumnR)
-    
+
     pozJmpNL = (nextRow+direction, nextColumnL-1)
     pozJmpNR = (nextRow+direction, nextColumnR+1)
     pozJmpPL = (previousRow-direction, nextColumnL-1)
