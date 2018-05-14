@@ -2,32 +2,17 @@ package checkers
 import Type._;
 
 class Board {
-  var board = Array.ofDim[Element](8,8);
-  var whites, blacks, whitesQ, blacksQ=0;
+  val board = Array.ofDim[Element](8,8);
 
   def setUpBoard() : Unit = {
-    whites = 12;
-    blacks = 12;
-    whitesQ = 0;
-    blacksQ = 0;
-    for (i <- 0 to (board.length-1)){
-      for (j <- 0 to (board.length-1)) {
-        board(i)(j) = new Element();
-      }
-    }
-    for (i <- 0 to 2){
-      for (j <- 0 to (board.length-1)) {
-        if ((i%2==0 && j%2==0) || (i%2==1 && j%2==1))
-          board(i)(j).setType(black);
-      }
-    }
-    for (i <- 5 to 7){
-      for (j <- 0 to (board.length-1)) {
-        if ((i%2==0 && j%2==0) || (i%2==1 && j%2==1))
-          board(i)(j).setType(white);
-      }
-    }
+    for (i <- board.indices; j <- board.indices)
+        board(i)(j) = new Element(null);
 
+    for (i <- 0 to 2; j<-board.indices; if i%2==0 && j%2==0 || i%2==1 && j%2==1)
+          board(i)(j)=new Element(black);
+
+    for (i <- 5 to 7; j <- board.indices; if i%2==0 && j%2==0 || i%2==1 && j%2==1)
+          board(i)(j)= new Element(white);;
   }
 
   def checkIfMoveCorrect(moves:String): Boolean = {
@@ -35,21 +20,21 @@ class Board {
   }
 
   def makeMoveSequence(moves: String): Unit ={
-    var positionsList = moves.split(" ");
-    for (i<-1 to (positionsList.length-1)){
+    val positionsList = moves.split(" ");
+    for (i<-1 until positionsList.length){
       makeMove(positionsList(i-1), positionsList(i))
     }
   }
+
   def makeMove(moves:(String, String)) : Unit ={
-    var i1 = moves._1.charAt(0).asDigit;
-    var j1 = moves._1.charAt(1).asDigit;
-    var i2 = moves._2.charAt(0).asDigit;
-    var j2 = moves._2.charAt(1).asDigit;
-    var movedType = board(i1)(j1).elementType;
-    movedType = checkIfChangeToQueen(i2, movedType);
-    board(i2)(j2).setType(movedType);
+    val i1 = moves._1.charAt(0).asDigit;
+    val j1 = moves._1.charAt(1).asDigit;
+    val i2 = moves._2.charAt(0).asDigit;
+    val j2 = moves._2.charAt(1).asDigit;
+    val movedType = checkIfChangeToQueen(i2, board(i1)(j1).elementType);
+    board(i2)(j2)= new Element(movedType);
     if (math.abs(i1-i2)>1){ //jump
-      if ((i2 > i1) && (j2>j1)){//TODO nie petla w petli tylko jedna petla!
+      if ((i2 > i1) && (j2>j1)){
         var j = j1;
         for (i <- i1 to (i2-1)){
            removeTile(i,j);
@@ -74,38 +59,35 @@ class Board {
             j+=1;
         }
       }
-    } else board(i1)(j1).setType(null);
+    } else board(i1)(j1) = new Element(null);
 
   }
 
   def checkIfChangeToQueen(i: Int, value: Type.Type): Type ={
     if (i==7 && value == black) {
-      blacks-=1;
-      blacksQ+=1;
       return blackQueen;
     }
     else if (i==0 && value == white){
-      whites-=1;
-      whitesQ+=1;
       return whiteQueen;
     }
     return value;
   }
 
 
+  def getNumberOfElems(mType: Type.Type): Int ={
+    val amountsInR = board.map(r => r.count(_.elementType == mType))
+    amountsInR.sum;
+  }
+
   def removeTile(i: Int,j: Int): Unit = {
-    if (board(i)(j).elementType == black) blacks-=1;
-    if (board(i)(j).elementType == blackQueen) blacksQ-=1;
-    if (board(i)(j).elementType == white) whites-=1;
-    if (board(i)(j).elementType == whiteQueen) whitesQ-=1;
-    board(i)(j).setType(null);
+    board(i)(j)=new Element(null);
   }
 
   def printBoard() : Unit = {
     println("  0 1 2 3 4 5 6 7");
-    for (i <- 0 to (board.length-1)){
+    for (i <- board.indices){
       print (i);
-      for (j <- 0 to (board.length-1)) {
+      for (j <- board.indices) {
         print(" "+ board(i)(j).printElement());
       }
       println();
@@ -113,13 +95,12 @@ class Board {
   }
 
   def isFinished(): Boolean ={
-    if ((whitesQ + whites == 0) || (blacks + blacksQ == 0)){
+    if ((getNumberOfElems(white) + getNumberOfElems(whiteQueen) == 0) || (getNumberOfElems(black) + getNumberOfElems(blackQueen) == 0))
       return true;
-    }
-    return false;
+    false;
   }
 
   def getAllPossibleMoves(): List[String] ={
-    return List("20 31", "22 33");
+    List("20 31", "22 33");
   }
 }

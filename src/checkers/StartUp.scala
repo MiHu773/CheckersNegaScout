@@ -17,7 +17,7 @@ object StartUp {
       else {
         board.makeMoveSequence(input);
         var enemysMove = negaScout.getBestMove(board);
-        board.makeMoveSequence(enemysMove);
+        //board.makeMoveSequence(enemysMove);
         board.printBoard();
       }
     }

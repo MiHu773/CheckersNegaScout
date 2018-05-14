@@ -2,13 +2,7 @@ package checkers
 
 import checkers.Type._
 
-class Element() {
-
-    var elementType : Type = null;
-
-    def setType(mType: Type) : Unit = {
-      elementType = mType;
-    }
+case class Element(elementType: Type) {
 
     def printElement() : String = {
       elementType match {
