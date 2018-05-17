@@ -100,7 +100,11 @@ class Board {
     false;
   }
 
-  def getAllPossibleMoves(): List[String] ={
+  def getAllPossibleMoves(colour: Type.Type): List[String] ={
     List("20 31", "22 33");
+  }
+
+  def heuristic(): Int ={
+    getNumberOfElems(white)+getNumberOfElems(whiteQueen)*3-getNumberOfElems(black)+getNumberOfElems(blackQueen)*3;
   }
 }
