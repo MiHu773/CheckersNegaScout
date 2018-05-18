@@ -5,16 +5,17 @@ import checkers.Type.Type
 
 case class Settings(moveSet: MoveSet,
                     element : Element,
-                    nextRow : Int,
-                    previousRow : Int,
+//                    nextRow : Int,
+//                    previousRow : Int,
 
                     direction : Int,
                     other : Type,
                     otherQ : Type
                     ) {
-
-  val nextColumnL : Int = element.posY + 1
-  val nextColumnR : Int = element.posY - 1
+  val nextRow = element.posX + direction
+  val previousRow = element.posX - direction
+  val nextColumnL : Int = element.posY - 1
+  val nextColumnR : Int = element.posY + 1
 
   val pozMNL = (nextRow, nextColumnL)
   val pozMNR = (nextRow, nextColumnR)

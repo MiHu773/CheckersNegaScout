@@ -1,18 +1,22 @@
 package checkers
 
+import src.{MoveSet, NegaScout}
+
 
 object StartUp {
   def main(args: Array[String]): Unit = {
     var board = new Board();
     var negaScout = new NegaScout();
-    board.setUpBoard();
-    board.setUpBoard3();
-    board.printBoard();
+//    board.setUpBoard();
+    board.setUpBoard6()
+    board.printBoard()
 
-    while (!board.isFinished()) {
+    val x = new MoveSet(board.getElement(1, 0), board)
+
+    /*while (!board.isFinished()) {
       print("Enter move: "); // input form ex. 60 51
       var input = scala.io.StdIn.readLine();
-      if (!board.checkIfMoveCorrect(input)){
+      if (!board.checkIfMoveCorrect(input)) {
         println("wrong move!");
       }
       else {
@@ -21,14 +25,15 @@ object StartUp {
         //board.makeMoveSequence(enemysMove);
         board.printBoard();
       }
-    while (true) {
-      print(board.possibleMoves("4", "2"))
-      print("\nEnter move: "); // input form ex. 60 51
-      var input = readf2("{0} {1}").asInstanceOf[(String, String)];
-      board.makeMove(input);
-      board.printBoard();
-    }
+      while (true) {
+        //print(board.possibleMoves("4", "2"))
+        print("\nEnter move: "); // input form ex. 60 51
+        var input = readf2("{0} {1}").asInstanceOf[(String, String)];
+        board.makeMove(input);
+        board.printBoard();
+      }
 
-    print("End of the game!");
+      print("End of the game!");
+    }*/
   }
 }

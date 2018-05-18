@@ -6,31 +6,31 @@ import checkers.Type.Type
 import scala.annotation.tailrec
 
 class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow : Int, previousRow : Int, nextColumnL : Int,*/) {
-  val root: Array[MoveSet] = findNextMoveSet()
-  val settings = generateSettings()
+  if (lastMove != null) println(lastMove)
+  else println( "null")
+  val settings:Settings = generateSettings()
+  val root: List[MoveSet] = findNextMoveSet()
 
-  def findNextMove(): Array[Move] = {
+//  val root: Array[MoveSet] =
+//  root :+ findNextJump()
 
-    //  ================================================================================================================================================================================================
-    //  przesuwanie po skosie na wolne pole
-    //  ================================================================================================================================================================================================
-    val MNLFunc = if (settings.pozMNL._2 <= 7 && settings.pozMNL._2 >= 0 && settings.checkedMNL == "-") //jeśli pole po skosie jest wolne
-      new Move((element.posX, element.posY), (settings.pozMNL._1, settings.pozMNL._2))
-    else new Move(null, null, false, null, false)
 
-    val MNRFunc = if (settings.pozMNR._2 <= 7 && settings.pozMNR._2 >= 0 && settings.checkedMNR == "-") //jeśli pole po skosie jest wolne
-      new Move((element.posX, element.posY), (settings.pozMNR._1, settings.pozMNR._2))
-    else new Move(null, null, false, null, false)
+  def findNextJump(): Array[Move] =
+  {
 
     //    ================================================================================================================================================================================================
     //    bicie po skosie w kierunku przeciwnika
     //    ================================================================================================================================================================================================
 
-    val JmpNLFunc = if (settings.pozJmpNL._2 <= 7 && settings.pozJmpNL._2 >= 0 && (settings.checkedMNL == settings.other || settings.checkedMNL == settings.otherQ) && settings.checkedJmpNL == "-") //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
+    val JmpNLFunc = if (settings.pozJmpNL._2 <= 7 && settings.pozJmpNL._2 >= 0
+      && (settings.checkedMNL == settings.other || settings.checkedMNL == settings.otherQ)
+      && settings.checkedJmpNL == Type.empty) //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
       new Move((element.posX, element.posY), (settings.pozJmpNL._1, settings.pozJmpNL._2), true, (settings.pozMNL._1, settings.pozMNL._2))
     else new Move(null, null, false, null, false)
 
-    val JmpNRFunc = if (settings.pozJmpNR._2 <= 7 && settings.pozJmpNR._2 >= 0 && (settings.checkedMNR == settings.other || settings.checkedMNR == settings.otherQ) && settings.checkedJmpNR == "-") //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
+    val JmpNRFunc = if (settings.pozJmpNR._2 <= 7 && settings.pozJmpNR._2 >= 0
+      && (settings.checkedMNR == settings.other || settings.checkedMNR == settings.otherQ)
+      && settings.checkedJmpNR == Type.empty) //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
       new Move((element.posX, element.posY), (settings.pozJmpNR._1, settings.pozJmpNR._2), true, (settings.pozMNR._1, settings.pozMNR._2))
     else new Move(null, null, false, null, false)
 
@@ -38,52 +38,126 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     //    bicie po skosie w kierunku swoim
     //    ================================================================================================================================================================================================
 
-    val JmpPLFunc = if (settings.pozJmpPL._2 <= 7 && settings.pozJmpPL._2 >= 0 && (settings.checkedMPL == settings.other || settings.checkedMPL == settings.otherQ) && settings.checkedJmpPL == "-") //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
+    val JmpPLFunc = if (settings.pozJmpPL._2 <= 7 && settings.pozJmpPL._2 >= 0
+      && (settings.checkedMPL == settings.other || settings.checkedMPL == settings.otherQ)
+      && settings.checkedJmpPL == Type.empty) //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
       new Move((element.posX, element.posY), (settings.pozJmpNR._1, settings.pozJmpNR._2), true, (settings.pozMNR._1, settings.pozMNR._2))
     else new Move(null, null, false, null, false)
 
-    val JmpPRFunc = if (settings.pozJmpPR._2 <= 7 && settings.pozJmpPR._2 >= 0 && (settings.checkedMPR == settings.other || settings.checkedMPR == settings.otherQ) && settings.checkedJmpPR == "-") //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
+    val JmpPRFunc = if (settings.pozJmpPR._2 <= 7 && settings.pozJmpPR._2 >= 0
+      && (settings.checkedMPR == settings.other || settings.checkedMPR == settings.otherQ)
+      && settings.checkedJmpPR == Type.empty) //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
       new Move((element.posX, element.posY), (settings.pozJmpPR._1, settings.pozJmpPR._2), true, (settings.pozMPR._1, settings.pozMPR._2))
     else new Move(null, null, false, null, false)
 
-    Array(MNLFunc, MNRFunc, JmpNLFunc, JmpNRFunc, JmpPLFunc, JmpPRFunc)
+    Array(JmpNLFunc, JmpNRFunc, JmpPLFunc, JmpPRFunc)
   }
 
-  @tailrec
-  def findNextMoveSet(): Array[MoveSet] = {
+  def findNextMove(): Array[Move] = {
 
-    for (mv <- findNextMove())
-      {
-        findNextMoveSet()
+    //  ================================================================================================================================================================================================
+    //  przesuwanie po skosie na wolne pole
+    //  ================================================================================================================================================================================================
+    val MNLFunc = if (settings.pozMNL._2 <= 7 && settings.pozMNL._2 >= 0 && settings.checkedMNL == Type.empty) //jeśli pole po skosie jest wolne
+      new Move((element.posX, element.posY), (settings.pozMNL._1, settings.pozMNL._2))
+    else new Move(null, null, false, null, false)
+
+    val MNRFunc = if (settings.pozMNR._2 <= 7 && settings.pozMNR._2 >= 0 && settings.checkedMNR == Type.empty) //jeśli pole po skosie jest wolne
+      new Move((element.posX, element.posY), (settings.pozMNR._1, settings.pozMNR._2))
+    else new Move(null, null, false, null, false)
+
+    Array(MNLFunc, MNRFunc)
+  }
+
+  def findAllMoveSets(): List[MoveSet] ={
+    print(findNextMoveSet())
+  findNextMoveSet()
+  }
+
+  def findNextMoveSet(): List[MoveSet] = {
+//    val numbers = 0 to 3
+    val auxList : List[MoveSet] = List()
+    for (mv <- findNextJump() ) {
+      if (mv.valid) {
+        println("checking for" + mv.start)
+        val committedMove: (Element, Board) = commitMove(mv, board)
+        committedMove._2.printBoard()
+        val ms: MoveSet = new MoveSet(committedMove._1, committedMove._2, mv)
+        ms.findNextMoveSet()
+        auxList :+ ms
       }
+    }
+    auxList
+  }
+ /* def findNextMoveSet(): Array[MoveSet] = {
+    val numbers = 0 to 3
+    val auxArray = Array.ofDim[MoveSet](4)
+    for ((mv, i) <- findNextJump() zip numbers ) {
+      println(mv, i)
+      if (mv.valid) {
+        val committedMove: (Element, Board) = commitMove(mv, board)
+        committedMove._2.printBoard()
+        val ms: MoveSet = new MoveSet(committedMove._1, committedMove._2, mv)
+        ms.findNextMoveSet()
+        auxArray(i) = ms
+      }
+    }
+    auxArray
+  }*/
 
+  /**
+    * Funkcja wykonuje symulacje wyglądu planszy po wykonaniu ruchu
+    * @param mv - ruch do wykonania
+    * @param board - plansza na której ma być wykonane przesunięcie
+    * @return - tuple(Element, Board), gdzie element to figura po przesunięciu, a boardz planaz po wykonaniu przesunięcia
+    */
+  def commitMove(mv: Move, board: Board): (Element, Board) = {
+    board.makeMove(translateMoveToString(mv))
+    if (mv.jump)
+      {
+        board.removeTile(mv.jumpOver._1, mv.jumpOver._2)
+      }
+    (board.getElement(mv.end._1, mv.end._2), board)
 
   }
 
-  def commitMove(mv : Move, board: Board): Board =
-  {
-    board.makeMove()
+  /**
+    * funkcja tłumaczy współrzędne zawarte w parametrze klasy Move na String
+    * @param mv - ruch do wykonania
+    * @return -
+    */
+  def translateMoveToString(mv: Move): (String, String) = {
+    (mv.start._1.toString + mv.start._2.toString, mv.end._1.toString + mv.end._2.toString)
   }
 
-  def check(position: (Int, Int) /*, other:String*/): String = {
+  /**
+    * funkcja sprawdzająca jaki jest element na danej pozycji
+    * @param position - pozycja do sprawdzenia
+    * @return - typ elementu zwrócony jako Type
+    */
+  def check(position: (Int, Int) /*, other:String*/): Type = {
+    if (position._1 < 0 || position._2 > 7 || position._1 > 7 || position._2 < 0) {
+      return Type.error
+    }
+    val toCheck: Element = board.getElement(position._1.toInt, position._2.toInt);
 
-    val toCheck: Element = board(position._1.toInt)(position._2.toInt);
-    if (position._1 < 0 || position._2 > 7 || position._2 > 7 || position._2 < 0) {
-      return "?"
+    if (toCheck.elementType == null) {
+      return Type.empty
     }
-    else if (toCheck.elementType == null) {
-      return "-"
-    }
+
     else if (toCheck.elementType == Type.white) {
-      return "x"
+      return Type.white
     }
+
     else if (toCheck.elementType == Type.black) {
-      return "o"
+      return Type.black
     }
+
     else if (toCheck.elementType == Type.whiteQueen) {
-      return "X"
+      return Type.whiteQueen
     }
-    else return "O"
+
+    else return Type.blackQueen
   }
 
   def generateSettings(): Settings = { // tworzy ustawienia wykorzystywane do obliczania następnego ruchu
@@ -92,39 +166,35 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
         new Settings(
           this,
           element,
-          element.posX - 1,
-          element.posY + 1,
           -1,
           Type.black,
           Type.blackQueen)
       //TODO God save the queen
       /*case Type.whiteQueen =>
-        new Settings(element.posX - 1,
-          element.posY + 1,
-          element.posY + 1,
-          element.posY - 1,
-          -1,
-          Type.black,
-          Type.blackQueen)*/
+      new Settings(element.posX - 1,
+        element.posY + 1,
+        element.posY + 1,
+        element.posY - 1,
+        -1,
+        Type.black,
+        Type.blackQueen)*/
 
       case Type.black =>
         new Settings(
           this,
           element,
-          element.posX + 1,
-          element.posY - 1,
           1,
           Type.white,
           Type.whiteQueen)
 
       /*case Type.blackQueen =>
-        new Settings(element.posX - 1,
-          element.posY + 1,
-          element.posY + 1,
-          element.posY - 1,
-          -1,
-          Type.black,
-          Type.blackQueen)*/
+      new Settings(element.posX - 1,
+        element.posY + 1,
+        element.posY + 1,
+        element.posY - 1,
+        -1,
+        Type.black,
+        Type.blackQueen)*/
       //      case null => "-"
     }
   }

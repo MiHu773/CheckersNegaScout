@@ -1,6 +1,6 @@
-package checkers
+package src
 
-import scala.util.Random;
+import checkers.Board;
 
 class NegaScout {
   def getBestMove(board: Board) : String = {
