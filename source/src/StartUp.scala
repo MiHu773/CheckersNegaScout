@@ -12,7 +12,9 @@ object StartUp {
     board.printBoard()
 
     val x = new MoveSet(board.getElement(1, 0), board)
+//    println(x.possibleMoves())
 
+    x.printPossibleMoves()
     /*while (!board.isFinished()) {
       print("Enter move: "); // input form ex. 60 51
       var input = scala.io.StdIn.readLine();

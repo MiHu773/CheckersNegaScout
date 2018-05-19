@@ -4,19 +4,61 @@ import checkers.{Board, Element, Type}
 import checkers.Type.Type
 
 import scala.annotation.tailrec
+import scala.collection.mutable
 
 class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow : Int, previousRow : Int, nextColumnL : Int,*/) {
   if (lastMove != null) println(lastMove)
-  else println( "null")
-  val settings:Settings = generateSettings()
+  else println("null")
+  val settings: Settings = generateSettings()
   val root: List[MoveSet] = findNextMoveSet()
 
-//  val root: Array[MoveSet] =
-//  root :+ findNextJump()
+  //  val root: Array[MoveSet] =
+  //  root :+ findNextJump()
 
+ /* def printPossibleMoves() : Unit ={
+    for ((pm, i)<- possibleMoves() zip (0 until possibleMoves().length))
+      {
+        println("i: " + i)
+        for (mv <- pm)
+          {
+            print(mv.end._1+mv.end._2 + " ")
+          }
+      }
+  }*/
+  def possibleMoves(): List[List[Move]] = {
+    val x: List[List[Move]] = jmpsToList()
+//    println("jmpsToList: " + jmpsToList())
+    x ++ movesToList()
+  }
 
-  def findNextJump(): Array[Move] =
-  {
+  def movesToList(): List[List[Move]] = {
+    //val aux: List[List[Move]] = jmpsToList()
+    var auxSet = Set[Move]()
+//    val auxFind: Array[Move] =
+    for (m <- findNextMove()) {
+      if (m.valid)
+        auxSet += m
+    }
+//    for (mv <- auxSet) yield {
+//      List(mv)
+//    }
+    List(auxSet.toList)
+  }
+
+  def jmpsToList(): List[List[Move]] = {
+    //    if (lastMove != null) return null
+    //    var set = Set[()
+    if (root.length == 0) return List(List(lastMove))
+
+    for (ms <- root) yield {
+      //      val aux : List[List[Move]] = ms.movesToList(pastList);
+      for (ml <- ms.jmpsToList()) yield {
+        ml :+ lastMove
+      }
+    }.flatten
+  }
+
+  def findNextJump(): Array[Move] = {
 
     //    ================================================================================================================================================================================================
     //    bicie po skosie w kierunku przeciwnika
@@ -69,60 +111,66 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     Array(MNLFunc, MNRFunc)
   }
 
-  def findAllMoveSets(): List[MoveSet] ={
+  def findAllMoveSets(): List[MoveSet] = {
     print(findNextMoveSet())
-  findNextMoveSet()
+    findNextMoveSet()
   }
 
   def findNextMoveSet(): List[MoveSet] = {
-//    val numbers = 0 to 3
-    val auxList : List[MoveSet] = List()
-    for (mv <- findNextJump() ) {
+    //    val numbers = 0 to 3
+    //val auxList: List[MoveSet] = List()
+    var auxSet = Set[MoveSet]()
+    for (mv <- findNextJump()) {
       if (mv.valid) {
         println("checking for" + mv.start)
         val committedMove: (Element, Board) = commitMove(mv, board)
         committedMove._2.printBoard()
         val ms: MoveSet = new MoveSet(committedMove._1, committedMove._2, mv)
-        ms.findNextMoveSet()
-        auxList :+ ms
+        //        ms.findNextMoveSet()
+        auxSet += ms
+        //        set += ms
+
       }
+      //        println("auxList: " + auxList + ", ms: " + ms + ", set: " + set)
     }
-    auxList
+    List(auxSet.toList).flatten
   }
- /* def findNextMoveSet(): Array[MoveSet] = {
-    val numbers = 0 to 3
-    val auxArray = Array.ofDim[MoveSet](4)
-    for ((mv, i) <- findNextJump() zip numbers ) {
-      println(mv, i)
-      if (mv.valid) {
-        val committedMove: (Element, Board) = commitMove(mv, board)
-        committedMove._2.printBoard()
-        val ms: MoveSet = new MoveSet(committedMove._1, committedMove._2, mv)
-        ms.findNextMoveSet()
-        auxArray(i) = ms
-      }
-    }
-    auxArray
-  }*/
+
+  /* def findNextMoveSet(): Array[MoveSet] = {
+     val numbers = 0 to 3
+     val auxArray = Array.ofDim[MoveSet](4)
+     for ((mv, i) <- findNextJump() zip numbers ) {
+       println(mv, i)
+       if (mv.valid) {
+         val committedMove: (Element, Board) = commitMove(mv, board)
+         committedMove._2.printBoard()
+         val ms: MoveSet = new MoveSet(committedMove._1, committedMove._2, mv)
+         ms.findNextMoveSet()
+         auxArray(i) = ms
+       }
+     }
+     auxArray
+   }*/
 
   /**
     * Funkcja wykonuje symulacje wyglądu planszy po wykonaniu ruchu
-    * @param mv - ruch do wykonania
+    *
+    * @param mv    - ruch do wykonania
     * @param board - plansza na której ma być wykonane przesunięcie
     * @return - tuple(Element, Board), gdzie element to figura po przesunięciu, a boardz planaz po wykonaniu przesunięcia
     */
   def commitMove(mv: Move, board: Board): (Element, Board) = {
     board.makeMove(translateMoveToString(mv))
-    if (mv.jump)
-      {
-        board.removeTile(mv.jumpOver._1, mv.jumpOver._2)
-      }
+    if (mv.jump) {
+      board.removeTile(mv.jumpOver._1, mv.jumpOver._2)
+    }
     (board.getElement(mv.end._1, mv.end._2), board)
 
   }
 
   /**
     * funkcja tłumaczy współrzędne zawarte w parametrze klasy Move na String
+    *
     * @param mv - ruch do wykonania
     * @return -
     */
@@ -132,6 +180,7 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
 
   /**
     * funkcja sprawdzająca jaki jest element na danej pozycji
+    *
     * @param position - pozycja do sprawdzenia
     * @return - typ elementu zwrócony jako Type
     */
