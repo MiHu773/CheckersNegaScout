@@ -15,16 +15,19 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
   //  val root: Array[MoveSet] =
   //  root :+ findNextJump()
 
- /* def printPossibleMoves() : Unit ={
+ def printPossibleMoves() : Unit ={
+   println(possibleMoves)
     for ((pm, i)<- possibleMoves() zip (0 until possibleMoves().length))
       {
-        println("i: " + i)
-        for (mv <- pm)
+
+        print("[" + i + "] :")
+        for (mv <- pm.reverse if mv != null)
           {
-            print(mv.end._1+mv.end._2 + " ")
+            print(mv.end + " ")
           }
+        println()
       }
-  }*/
+  }
   def possibleMoves(): List[List[Move]] = {
     val x: List[List[Move]] = jmpsToList()
 //    println("jmpsToList: " + jmpsToList())
