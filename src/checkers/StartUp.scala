@@ -1,7 +1,5 @@
 package checkers
 
-import src.{MoveSet, NegaScout}
-
 
 object StartUp {
   def main(args: Array[String]): Unit = {

@@ -1,4 +1,4 @@
-package src
+package checkers
 
 case class Move (
              start : (Int, Int) = null , var end : (Int, Int) = null,

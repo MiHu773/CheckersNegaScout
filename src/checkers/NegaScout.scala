@@ -1,6 +1,4 @@
-package src
-
-import checkers.Board;
+package checkers;
 
 class NegaScout {
   def getBestMove(board: Board) : String = {

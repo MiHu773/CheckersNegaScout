@@ -1,6 +1,5 @@
-package src
+package checkers
 
-import checkers.Element
 import checkers.Type.Type
 
 case class Settings(moveSet: MoveSet,

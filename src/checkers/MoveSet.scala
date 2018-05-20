@@ -1,10 +1,6 @@
-package src
+package checkers
 
-import checkers.{Board, Element, Type}
 import checkers.Type.Type
-
-import scala.annotation.tailrec
-import scala.collection.mutable
 
 class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, nextRow : Int, previousRow : Int, nextColumnL : Int,*/) {
   if (lastMove != null) println(lastMove)
@@ -16,7 +12,7 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
   //  root :+ findNextJump()
 
  def printPossibleMoves() : Unit ={
-   println(removeNull(possibleMoves()))
+
     for ((pm, i)<- removeNull(possibleMoves()) zip (0 until possibleMoves().length))
       {
 
@@ -37,7 +33,7 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
 
   def possibleMoves(): List[List[Move]] = {
 //    println("jmpsToList: " + jmpsToList())
-    removeNull(possibleMoves()) ++ movesToList()
+    removeNull(jmpsToList()) ++ movesToList()
   }
 
   def movesToList(): List[List[Move]] = {
@@ -142,10 +138,10 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
         auxBoard.setUpBoardCopy(board)
 //        println("checking for" + mv.start)
 //        println("checking for board: ")
-        auxBoard.printBoard()
+
         val committedMove: (Element, Board) = commitMove(mv, auxBoard)
 //        println("after committing")
-        committedMove._2.printBoard()
+
         val ms: MoveSet = new MoveSet(committedMove._1, committedMove._2, mv)
         //        ms.findNextMoveSet()
         auxSet += ms
