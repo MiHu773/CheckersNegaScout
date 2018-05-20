@@ -59,8 +59,14 @@ import src.{Move, MoveSet}
     board(5)(3).setType(white)
   }*/
 
-  class Board {
-    val board = Array.ofDim[Element](8,8);
+case class Board() {
+    var board = Array.ofDim[Element](8, 8);
+
+/*   def copy () : Board ={
+      var cp = new Board()
+      cp.board =  this.board.clone()
+      cp
+    }*/
 
     def setUpBoard6() : Unit = {
       for (i <- board.indices; j <- board.indices)
@@ -71,6 +77,7 @@ import src.{Move, MoveSet}
       board(2)(1) = new Element(black, 2, 1)
       board(4)(3) = new Element(black, 4, 3)
       board(6)(5) = new Element(black, 6, 5)
+      board(6)(3) = new Element(black, 6, 3)
     }
     def setUpBoard4() : Unit = {
       for (i <- board.indices; j <- board.indices)
@@ -106,7 +113,16 @@ import src.{Move, MoveSet}
       for (i <- 5 to 7; j <- board.indices; if i%2==0 && j%2==0 || i%2==1 && j%2==1)
         board(i)(j)= new Element(white, i, j)
     }
+    def setUpBoardCopy(board: Board) : Unit = {
+      for (i <- board.board.indices; j <- board.board.indices)
+        this.board(i)(j) = new Element(board.board(i)(j).elementType, board.board(i)(j).posX, board.board(i)(j).posY)
 
+      /*for (i <- 0 to 2; j<-board.indices; if i%2==0 && j%2==0 || i%2==1 && j%2==1)
+        board(i)(j)=new Element(black, i, j)
+
+      for (i <- 5 to 7; j <- board.indices; if i%2==0 && j%2==0 || i%2==1 && j%2==1)
+        board(i)(j)= new Element(white, i, j)*/
+    }
     def checkIfMoveCorrect(moves:String): Boolean = {
       return true; // TODO checking if move is correct
     }

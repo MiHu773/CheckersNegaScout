@@ -6,7 +6,7 @@ import checkers.Type.Type
 import scala.annotation.tailrec
 import scala.collection.mutable
 
-class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow : Int, previousRow : Int, nextColumnL : Int,*/) {
+class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, nextRow : Int, previousRow : Int, nextColumnL : Int,*/) {
   if (lastMove != null) println(lastMove)
   else println("null")
   val settings: Settings = generateSettings()
@@ -16,8 +16,8 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
   //  root :+ findNextJump()
 
  def printPossibleMoves() : Unit ={
-   println(possibleMoves)
-    for ((pm, i)<- possibleMoves() zip (0 until possibleMoves().length))
+   println(removeNull(possibleMoves()))
+    for ((pm, i)<- removeNull(possibleMoves()) zip (0 until possibleMoves().length))
       {
 
         print("[" + i + "] :")
@@ -28,10 +28,16 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
         println()
       }
   }
+  def removeNull(list: List[List[Move]]) : List[List[Move]] ={
+    for ( pm <- list )
+    yield {
+      pm.filter(_ != null)
+    }
+  }
+
   def possibleMoves(): List[List[Move]] = {
-    val x: List[List[Move]] = jmpsToList()
 //    println("jmpsToList: " + jmpsToList())
-    x ++ movesToList()
+    removeNull(possibleMoves()) ++ movesToList()
   }
 
   def movesToList(): List[List[Move]] = {
@@ -39,6 +45,7 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     var auxSet = Set[Move]()
 //    val auxFind: Array[Move] =
     for (m <- findNextMove()) {
+//      println("m: " + m)
       if (m.valid)
         auxSet += m
     }
@@ -48,17 +55,23 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     List(auxSet.toList)
   }
 
-  def jmpsToList(): List[List[Move]] = {
+  def jmpsToList(string: String = "   "): List[List[Move]] = {
     //    if (lastMove != null) return null
     //    var set = Set[()
     if (root.length == 0) return List(List(lastMove))
 
-    for (ms <- root) yield {
+    val x = for (ms <- root) yield {
       //      val aux : List[List[Move]] = ms.movesToList(pastList);
-      for (ml <- ms.jmpsToList()) yield {
-        ml :+ lastMove
+//      println("ms: " + ms)
+      for (ml <- ms.jmpsToList(string + "   ") ) yield {
+//        println(string + "ml: " + ml)
+
+            ml :+ lastMove
       }
-    }.flatten
+    }
+//      println("x: " + x)
+
+      x.flatten
   }
 
   def findNextJump(): Array[Move] = {
@@ -86,7 +99,7 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     val JmpPLFunc = if (settings.pozJmpPL._2 <= 7 && settings.pozJmpPL._2 >= 0
       && (settings.checkedMPL == settings.other || settings.checkedMPL == settings.otherQ)
       && settings.checkedJmpPL == Type.empty) //jeśli pole po skosie jest zajęte przez przeciwny kolor i pole za nim jest wolne
-      new Move((element.posX, element.posY), (settings.pozJmpNR._1, settings.pozJmpNR._2), true, (settings.pozMNR._1, settings.pozMNR._2))
+      new Move((element.posX, element.posY), (settings.pozJmpPL._1, settings.pozJmpPL._2), true, (settings.pozMPL._1, settings.pozMPL._2))
     else new Move(null, null, false, null, false)
 
     val JmpPRFunc = if (settings.pozJmpPR._2 <= 7 && settings.pozJmpPR._2 >= 0
@@ -123,17 +136,22 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     //    val numbers = 0 to 3
     //val auxList: List[MoveSet] = List()
     var auxSet = Set[MoveSet]()
-    for (mv <- findNextJump()) {
-      if (mv.valid) {
-        println("checking for" + mv.start)
-        val committedMove: (Element, Board) = commitMove(mv, board)
+
+    for (mv <- findNextJump() if mv.valid) {
+        val auxBoard : Board= board.copy()
+        auxBoard.setUpBoardCopy(board)
+//        println("checking for" + mv.start)
+//        println("checking for board: ")
+        auxBoard.printBoard()
+        val committedMove: (Element, Board) = commitMove(mv, auxBoard)
+//        println("after committing")
         committedMove._2.printBoard()
         val ms: MoveSet = new MoveSet(committedMove._1, committedMove._2, mv)
         //        ms.findNextMoveSet()
         auxSet += ms
         //        set += ms
 
-      }
+
       //        println("auxList: " + auxList + ", ms: " + ms + ", set: " + set)
     }
     List(auxSet.toList).flatten
