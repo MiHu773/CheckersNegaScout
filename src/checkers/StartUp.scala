@@ -8,11 +8,13 @@ object StartUp {
 //    board.setUpBoard();
     board.setUpBoard6()
     board.printBoard()
+    val x = board getAllMoveSetsForColor(Type.white)
+      board.printAllMoveSetsForColor(Type.black)
 
-    val x = new MoveSet(board.getElement(1, 0), board)
+//    val x = new MoveSet(board.getElement(1, 0), board)
 //    println(x.possibleMoves())
 
-    x.printPossibleMoves()
+//    x.printPossibleMoves()
     /*while (!board.isFinished()) {
       print("Enter move: "); // input form ex. 60 51
       var input = scala.io.StdIn.readLine();

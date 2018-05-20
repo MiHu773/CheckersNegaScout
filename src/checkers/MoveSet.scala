@@ -3,17 +3,13 @@ package checkers
 import checkers.Type.Type
 
 class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, nextRow : Int, previousRow : Int, nextColumnL : Int,*/) {
-  if (lastMove != null) println(lastMove)
-  else println("null")
+
   val settings: Settings = generateSettings()
   val root: List[MoveSet] = findNextMoveSet()
 
-  //  val root: Array[MoveSet] =
-  //  root :+ findNextJump()
-
  def printPossibleMoves() : Unit ={
 
-    for ((pm, i)<- removeNull(possibleMoves()) zip (0 until possibleMoves().length))
+    for ((pm, i)<- possibleMoves() zip (0 until possibleMoves().length))
       {
 
         print("[" + i + "] :")
@@ -33,7 +29,11 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
 
   def possibleMoves(): List[List[Move]] = {
 //    println("jmpsToList: " + jmpsToList())
-    removeNull(jmpsToList()) ++ movesToList()
+    val x = removeNull(jmpsToList())
+    val y = movesToList()
+    if (x.head.nonEmpty)
+       y ++ x
+    else y
   }
 
   def movesToList(): List[List[Move]] = {
