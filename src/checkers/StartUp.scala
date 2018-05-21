@@ -6,11 +6,12 @@ object StartUp {
     var board = new Board();
     var negaScout = new NegaScout();
 //    board.setUpBoard();
-    board.setUpBoard6()
+    board.setUpBoard()
     board.printBoard()
+    val y = board.getAllPossibleMovesForColor(Type.white);
     val x = board getAllMoveSetsForColor(Type.white)
-      board.printAllMoveSetsForColor(Type.black)
-
+    val z = board.getAllPossibleMoves(Type.white);
+    val b = 1;
 //    val x = new MoveSet(board.getElement(1, 0), board)
 //    println(x.possibleMoves())
 

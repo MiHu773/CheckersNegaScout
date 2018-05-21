@@ -151,13 +151,32 @@ case class Board() {
 
   def printAllMoveSetsForColor(color: Type) = for (x <- getAllMoveSetsForColor(color)) x.printPossibleMoves()
 
-  def getAllMoveSetsForColor(color: Type) : List[MoveSet] = {
+  def getAllMoveSetsForColor(color: Type): List[MoveSet] = {
     //val res: List[MoveSet] = List[MoveSet]()
-  val res =  for (x <- board.indices; y <- board.indices if board(x)(y).elementType == color) yield new MoveSet(board(x)(y), this)
-    {
-//      res :+ new MoveSet(board(x)(y), this)
-      println("x: ", x, "y: ", y)
+    val res = for (x <- board.indices; y <- board.indices if board(x)(y).elementType == color) yield new MoveSet(board(x)(y), this);
+    val resList = res.toList
+    resList;
+  }
+
+  def getAllPossibleMovesForColor(color: Type): List[List[List[Move]]] = {
+    for (ms <- getAllMoveSetsForColor(color)) yield {
+      ms.possibleMoves()
+        //.foreach(_.foreach())
     }
-    res.toList
+  }
+
+  def getAllPossibleMoves(color: Type): List[String] ={
+    val moves = getAllPossibleMovesForColor(color)
+        .map(_.map(createStringMove));
+    moves.flatten
+  }
+
+  def createStringMove(moves: List[Move]): String ={
+    var moveString = "";
+    if (moves.isEmpty) return moveString;
+    for(move<-moves){
+      moveString = move.end._1.toString + move.end._2.toString + " " + moveString;
+    }
+    moves.last.start._1.toString + moves.last.start._2.toString +" " + moveString
   }
 }
