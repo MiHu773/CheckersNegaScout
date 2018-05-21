@@ -4,9 +4,6 @@ import checkers.Type.Type
 
 case class Settings(moveSet: MoveSet,
                     element : Element,
-//                    nextRow : Int,
-//                    previousRow : Int,
-
                     direction : Int,
                     other : Type,
                     otherQ : Type

@@ -11,7 +11,6 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
 
     for ((pm, i)<- possibleMoves() zip (0 until possibleMoves().length))
       {
-
         print("[" + i + "] :")
         for (mv <- pm.reverse if mv != null)
           {
@@ -28,45 +27,27 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
   }
 
   def possibleMoves(): List[List[Move]] = {
-//    println("jmpsToList: " + jmpsToList())
     val x = removeNull(jmpsToList())
-    val y = movesToList()
+    val y = movesToList().map(List(_ ))
     if (x.head.nonEmpty)
        y ++ x
     else y
   }
 
-  def movesToList(): List[List[Move]] = {
-    //val aux: List[List[Move]] = jmpsToList()
-    var auxSet = Set[Move]()
-//    val auxFind: Array[Move] =
-    for (m <- findNextMove()) {
-//      println("m: " + m)
-      if (m.valid)
-        auxSet += m
-    }
-//    for (mv <- auxSet) yield {
-//      List(mv)
-//    }
-    List(auxSet.toList)
+  def movesToList(): List[Move] = {
+    val auxArr = for (m <- findNextMove() if (m.valid)) yield m
+    auxArr.toList
   }
 
   def jmpsToList(string: String = "   "): List[List[Move]] = {
-    //    if (lastMove != null) return null
-    //    var set = Set[()
+
     if (root.length == 0) return List(List(lastMove))
 
     val x = for (ms <- root) yield {
-      //      val aux : List[List[Move]] = ms.movesToList(pastList);
-//      println("ms: " + ms)
       for (ml <- ms.jmpsToList(string + "   ") ) yield {
-//        println(string + "ml: " + ml)
-
             ml :+ lastMove
       }
     }
-//      println("x: " + x)
-
       x.flatten
   }
 
@@ -129,45 +110,20 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
   }
 
   def findNextMoveSet(): List[MoveSet] = {
-    //    val numbers = 0 to 3
-    //val auxList: List[MoveSet] = List()
+
     var auxSet = Set[MoveSet]()
 
     for (mv <- findNextJump() if mv.valid) {
         val auxBoard : Board= board.copy()
         auxBoard.setUpBoardCopy(board)
-//        println("checking for" + mv.start)
-//        println("checking for board: ")
 
         val committedMove: (Element, Board) = commitMove(mv, auxBoard)
-//        println("after committing")
 
         val ms: MoveSet = new MoveSet(committedMove._1, committedMove._2, mv)
-        //        ms.findNextMoveSet()
         auxSet += ms
-        //        set += ms
-
-
-      //        println("auxList: " + auxList + ", ms: " + ms + ", set: " + set)
     }
     List(auxSet.toList).flatten
   }
-
-  /* def findNextMoveSet(): Array[MoveSet] = {
-     val numbers = 0 to 3
-     val auxArray = Array.ofDim[MoveSet](4)
-     for ((mv, i) <- findNextJump() zip numbers ) {
-       println(mv, i)
-       if (mv.valid) {
-         val committedMove: (Element, Board) = commitMove(mv, board)
-         committedMove._2.printBoard()
-         val ms: MoveSet = new MoveSet(committedMove._1, committedMove._2, mv)
-         ms.findNextMoveSet()
-         auxArray(i) = ms
-       }
-     }
-     auxArray
-   }*/
 
   /**
     * Funkcja wykonuje symulacje wyglądu planszy po wykonaniu ruchu

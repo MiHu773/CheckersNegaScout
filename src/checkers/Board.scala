@@ -9,12 +9,13 @@ case class Board() {
     for (i <- board.indices; j <- board.indices)
       board(i)(j) = new Element(null, i, j)
 
-    board(1)(0) = new Element(white, 1, 0)
+    board(1)(2) = new Element(white, 1, 2)
 
     board(2)(1) = new Element(black, 2, 1)
     board(4)(3) = new Element(black, 4, 3)
     board(6)(5) = new Element(black, 6, 5)
     board(6)(3) = new Element(black, 6, 3)
+    board(2)(3) = new Element(black, 2, 3)
   }
 
   def setUpBoard4(): Unit = {
