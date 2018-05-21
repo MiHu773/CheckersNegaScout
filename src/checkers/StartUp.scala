@@ -1,17 +1,27 @@
 package checkers
 
+
 object StartUp {
   def main(args: Array[String]): Unit = {
     var board = new Board();
+    var negaScout = new NegaScout();
     board.setUpBoard();
     board.printBoard();
 
-    while (true) {
+    while (!board.isFinished()) {
       print("Enter move: "); // input form ex. 60 51
-      // var input = readf2("{0} {1}").asInstanceOf[(String, String)];
       var input = scala.io.StdIn.readLine();
-      board.makeMoveSequence(input);
-      board.printBoard();
+      if (!board.checkIfMoveCorrect(input)){
+        println("wrong move!");
+      }
+      else {
+        board.makeMoveSequence(input);
+        var enemysMove = negaScout.getBestMove(board);
+        //board.makeMoveSequence(enemysMove);
+        board.printBoard();
+      }
     }
+
+    print("End of the game!");
   }
 }
