@@ -2,9 +2,29 @@ package checkers
 
 import checkers.Type._
 
-case class Board() {
-  var board = Array.ofDim[Element](8, 8);
+class Board() {
+  val board = Array.ofDim[Element](8, 8);
 
+  def setUpBoard7(): Unit = {
+    for (i <- board.indices; j <- board.indices)
+      board(i)(j) = new Element(null, i, j)
+
+    for (i <- 0 to 1; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
+      board(i)(j) = new Element(black, i, j)
+
+    for (i <- 6 to 7; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
+      board(i)(j) = new Element(white, i, j)
+
+    board(6)(4) = new Element(white, 6, 4)
+    board(2)(0) = new Element(white, 2, 0)
+    board(3)(1) = new Element(white, 3, 1)
+
+    board(5)(5) = new Element(black, 5, 5)
+    board(3)(5) = new Element(black, 3, 5)
+    board(3)(3) = new Element(black, 3, 3)
+    board(5)(7) = new Element(white, 5, 7)
+
+  }
   def setUpBoard6(): Unit = {
     for (i <- board.indices; j <- board.indices)
       board(i)(j) = new Element(null, i, j)
@@ -131,7 +151,6 @@ case class Board() {
     board(i)(j) = new Element(null, i, j)
   }
 
-  def takeElement(i: Int, j: Int): Element = board(i)(j)
 
   def printBoard(): Unit = {
     println("  0 1 2 3 4 5 6 7");
@@ -159,19 +178,18 @@ case class Board() {
     resList;
   }
 
-  def getAllPossibleMovesForColor(color: Type): List[List[List[Move]]] = {
-    for (ms <- getAllMoveSetsForColor(color)) yield {
-      ms.possibleMoves()
-        //.foreach(_.foreach())
-    }
-  }
 
   def getAllPossibleMoves(color: Type): List[String] ={
     val moves = getAllPossibleMovesForColor(color)
-        .map(_.map(createStringMove));
+        .map(_.map(createStringMove))
     moves.flatten
+
+
   }
 
+  def getAllPossibleMovesForColor(color: Type): List[List[List[Move]]] = {
+    for (ms <- getAllMoveSetsForColor(color)) yield {ms.possibleMoves()}
+  }
   def createStringMove(moves: List[Move]): String ={
     var moveString = "";
     if (moves.isEmpty) return moveString;

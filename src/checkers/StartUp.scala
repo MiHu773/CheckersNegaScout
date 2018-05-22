@@ -5,9 +5,9 @@ object StartUp {
   def main(args: Array[String]): Unit = {
     var board = new Board();
     var negaScout = new NegaScout();
-    board.setUpBoard();
+    board.setUpBoard7();
     board.printBoard();
-
+    board.printAllMoveSetsForColor(Type.white)
     while (!board.isFinished()) {
       print("Enter move: "); // input form ex. 60 51
       var input = scala.io.StdIn.readLine();
@@ -17,7 +17,7 @@ object StartUp {
       else {
         board.makeMoveSequence(input);
         var enemysMove = negaScout.getBestMove(board);
-        //board.makeMoveSequence(enemysMove);
+        board.makeMoveSequence(enemysMove);
         board.printBoard();
       }
     }

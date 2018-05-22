@@ -7,7 +7,7 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
   val settings: Settings = generateSettings()
   val root: List[MoveSet] = findNextMoveSet()
 
- def printPossibleMoves() : Unit ={
+  def printPossibleMoves() : Unit ={
 
     for ((pm, i)<- possibleMoves() zip (0 until possibleMoves().length))
       {
@@ -28,23 +28,22 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
 
   def possibleMoves(): List[List[Move]] = {
     val x = removeNull(jmpsToList())
-    val y = movesToList().map(List(_ ))
-    if (x.head.nonEmpty)
-       y ++ x
+    val y = movesToList()
+    if (x.head.nonEmpty) {x ++ y}//.filter(_.jumpOver != null)
     else y
   }
 
-  def movesToList(): List[Move] = {
+  def movesToList(): List[List[Move]] = {
     val auxArr = for (m <- findNextMove() if (m.valid)) yield m
-    auxArr.toList
+    auxArr.toList.map(List(_))
   }
 
-  def jmpsToList(string: String = "   "): List[List[Move]] = {
+  def jmpsToList(): List[List[Move]] = {
 
     if (root.length == 0) return List(List(lastMove))
 
     val x = for (ms <- root) yield {
-      for (ml <- ms.jmpsToList(string + "   ") ) yield {
+      for (ml <- ms.jmpsToList() ) yield {
             ml :+ lastMove
       }
     }
@@ -114,7 +113,7 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
     var auxSet = Set[MoveSet]()
 
     for (mv <- findNextJump() if mv.valid) {
-        val auxBoard : Board= board.copy()
+        val auxBoard : Board = board
         auxBoard.setUpBoardCopy(board)
 
         val committedMove: (Element, Board) = commitMove(mv, auxBoard)
