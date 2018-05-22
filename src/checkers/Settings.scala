@@ -29,7 +29,7 @@ case class Settings(moveSet: MoveSet,
   val checkedMPR =  moveSet.check(pozMPR)
 
   val checkedJmpNL =  moveSet.check(pozJmpNL)
-  val checkedJmpNR =  moveSet.check(pozJmpNL)
+  val checkedJmpNR =  moveSet.check(pozJmpNR)
   val checkedJmpPL =  moveSet.check(pozJmpPL)
   val checkedJmpPR =  moveSet.check(pozJmpPR)
 
