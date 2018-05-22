@@ -180,4 +180,8 @@ case class Board() {
     }
     moves.last.start._1.toString + moves.last.start._2.toString +" " + moveString
   }
+
+  def heuristic(): Int ={
+    getNumberOfElems(white)+getNumberOfElems(whiteQueen)*3-getNumberOfElems(black)+getNumberOfElems(blackQueen)*3;
+  }
 }
