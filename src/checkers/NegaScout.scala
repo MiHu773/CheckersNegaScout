@@ -1,10 +1,11 @@
-package checkers
+package checkers;
 
-import Type._;
+import Type._
+
 class NegaScout {
-  def getBestMove(board: Board) : String = {
+ def getBestMove(board: Board) : String = {
       val random = scala.util.Random;
-      val allMoves = board.getAllPossibleMoves(black);
+      val allMoves = board.getAllPossibleMoves(white);
       val r = random.nextInt(allMoves.length);
       val tree = buildTree(board);
       return allMoves(r);
