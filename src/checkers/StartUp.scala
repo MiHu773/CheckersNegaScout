@@ -8,10 +8,11 @@ object StartUp {
 
     var board = new Board()
     //    var negaScout = new NegaScout()
-    board.setUpBoard9()
+    board.setUpBoard8()
     board.printBoard()
     val ms = new MoveSet(board.board(3)(3), board)
-    println(ms.findQueenNextMove().toString())
+    board.printAllMoveSetsForColor(Type.whiteQueen)
+    println(ms.removeNonJumpsIfNeeded(ms.findQueenNextMove()).toString())
   }
 //    board.printBoard()
 

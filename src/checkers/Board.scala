@@ -18,12 +18,6 @@ class Board() {
     for (i <- board.indices; j <- board.indices)
       board(i)(j) = new Element(null, i, j)
 
-    for (i <- 0 to 1; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
-      board(i)(j) = new Element(black, i, j)
-
-    for (i <- 6 to 7; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
-      board(i)(j) = new Element(white, i, j)
-
     board(3)(3) = new Element(whiteQueen, 3, 3)
 
     board(0)(0) = new Element(black, 0, 0)

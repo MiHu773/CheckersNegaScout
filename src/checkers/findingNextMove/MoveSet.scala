@@ -25,13 +25,31 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
     }
   }
 
+  def checkIfRemovingNeeded(list: List[List[Move]]) : Boolean ={
+    for(list <- list; move <- list)
+       if (move.jump == true)
+         return true
+    return false
+  }
+  def removeNonJumpsIfNeeded(list: List[List[Move]]) : List[List[Move]] ={
+    if (checkIfRemovingNeeded(list))
+      list.map(_.filter(_.jump == true)).filter(_.nonEmpty)
+    else list.filter(_.nonEmpty)
+
+  }
   def removeNull(list: List[List[Move]]): List[List[Move]] = {
     for (pm <- list)
       yield pm.filter(_ != null)
-
   }
 
   def possibleMoves(): List[List[Move]] = {
+    if (element.elementType == Type.whiteQueen || element.elementType == Type.blackQueen)
+      removeNonJumpsIfNeeded(findQueenNextMove())
+    else
+      removeNonJumpsIfNeeded(findManNextMove())
+  }
+
+  def findManNextMove() : List[List[Move]] = {
     val x = removeNull(jmpsToList())
     val y = movesToList()
     if (x.head.nonEmpty) {
@@ -60,9 +78,9 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
   def findQueenNextMove(): List[List[Move]] = {
    val aux = (for (x <- -1 to 1 if x != 0; y <- - 1 to 1 if y != 0)
       yield moveQueenCheck((element.posX, element.posY), (x, y), board)) // (collection.breakOut)
-
     aux.toList.flatten
   }
+
 
   private def moveQueenCheck(position: (Int, Int), direction: (Int, Int), board: Board): List[List[Move]] = {
   val nextPos = ((position._1 + direction._1), (position._2 + direction._2))
@@ -74,18 +92,23 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
           auxBoard.setUpBoardCopy(board)
           val move = new Move((element.posX, element.posY), nextPos, true, position, true)
           commitMove(move, auxBoard)
-          auxBoard.printBoard()
+
           auxBoard.board(move.end._1)(move.end._2) = new Element(settings.man, move.end._1, move.end._2)
-          auxBoard.printBoard()
+
           val moveSet : MoveSet = new MoveSet(auxBoard.board(move.end._1)(move.end._2), auxBoard, move)
           val aux = moveSet.jmpsToList()
-          println("moveSet.jmpsToList(): " + aux.toString())
+
           return moveSet.jmpsToList()
         }
       else return null
     }
     if (check(position) == Type.error) return null
-    else return List(List(new Move((element.posX, element.posY), position))) ++ moveQueenCheck(nextPos, direction, board)
+    else{
+      val aux = moveQueenCheck(nextPos, direction, board)
+      if (aux != null) return List(List(new Move((element.posX, element.posY), position))) ++ aux
+      else return List(List(new Move((element.posX, element.posY), position)))
+    }
+
   }
 
 
