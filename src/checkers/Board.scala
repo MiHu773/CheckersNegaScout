@@ -1,9 +1,41 @@
 package checkers
 
 import checkers.Type._
+import checkers.findingNextMove.{Move, MoveSet}
 
 class Board() {
   val board = Array.ofDim[Element](8, 8);
+
+  def setUpBoard9(): Unit = {
+    for (i <- board.indices; j <- board.indices)
+      board(i)(j) = new Element(null, i, j)
+
+    board(3)(3) = new Element(whiteQueen, 3, 3)
+
+    board(1)(1) = new Element(black, 1, 1)
+  }
+  def setUpBoard8(): Unit = {
+    for (i <- board.indices; j <- board.indices)
+      board(i)(j) = new Element(null, i, j)
+
+    for (i <- 0 to 1; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
+      board(i)(j) = new Element(black, i, j)
+
+    for (i <- 6 to 7; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
+      board(i)(j) = new Element(white, i, j)
+
+    board(3)(3) = new Element(whiteQueen, 3, 3)
+
+    board(0)(0) = new Element(black, 0, 0)
+    board(1)(1) = new Element(black, 1, 1)
+    board(5)(1) = new Element(black, 5, 1)
+    board(7)(1) = new Element(black, 7, 1)
+
+    board(0)(6) = new Element(black, 0, 6)
+    board(2)(6) = new Element(black, 2, 6)
+    board(4)(6) = new Element(black, 4, 6)
+    board(4)(4) = new Element(black, 4, 4)
+  }
 
   def setUpBoard7(): Unit = {
     for (i <- board.indices; j <- board.indices)
@@ -25,6 +57,7 @@ class Board() {
     board(5)(7) = new Element(white, 5, 7)
 
   }
+
   def setUpBoard6(): Unit = {
     for (i <- board.indices; j <- board.indices)
       board(i)(j) = new Element(null, i, j)
@@ -179,27 +212,30 @@ class Board() {
   }
 
 
-  def getAllPossibleMoves(color: Type): List[String] ={
+  def getAllPossibleMoves(color: Type): List[String] = {
     val moves = getAllPossibleMovesForColor(color)
-        .map(_.map(createStringMove))
+      .map(_.map(createStringMove))
     moves.flatten
 
 
   }
 
   def getAllPossibleMovesForColor(color: Type): List[List[List[Move]]] = {
-    for (ms <- getAllMoveSetsForColor(color)) yield {ms.possibleMoves()}
-  }
-  def createStringMove(moves: List[Move]): String ={
-    var moveString = "";
-    if (moves.isEmpty) return moveString;
-    for(move<-moves){
-      moveString = move.end._1.toString + move.end._2.toString + " " + moveString;
+    for (ms <- getAllMoveSetsForColor(color)) yield {
+      ms.possibleMoves()
     }
-    moves.last.start._1.toString + moves.last.start._2.toString +" " + moveString
   }
 
-  def heuristic(): Int ={
-    getNumberOfElems(white)+getNumberOfElems(whiteQueen)*3-getNumberOfElems(black)+getNumberOfElems(blackQueen)*3;
+  def createStringMove(moves: List[Move]): String = {
+    var moveString = "";
+    if (moves.isEmpty) return moveString;
+    for (move <- moves) {
+      moveString = move.end._1.toString + move.end._2.toString + " " + moveString;
+    }
+    moves.last.start._1.toString + moves.last.start._2.toString + " " + moveString
+  }
+
+  def heuristic(): Int = {
+    getNumberOfElems(white) + getNumberOfElems(whiteQueen) * 3 - getNumberOfElems(black) + getNumberOfElems(blackQueen) * 3;
   }
 }
