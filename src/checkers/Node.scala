@@ -2,22 +2,23 @@ package checkers
 
 import Type._;
 
-class Node (board: Board, parent: Node, level:Int, colour: Type.Type){
+case class Node(boardMove: (Board, String), parent: Node, level: Int, colour: Type.Type) {
   val maxLevel = 5;
   val next = {
     if (colour == white) black;
     else white;
   }
-  val children: Seq[Node] ={
+  val children: Seq[Node] = {
     if (level > maxLevel) Seq.empty;
-    else board.getAllPossibleMoves(colour)
+    else boardMove._1.getAllPossibleMoves(colour)
       .view
-      .map(b => {
-        val mBoard = board;
-        mBoard.makeMoveSequence(b);
-        mBoard
+      .map(move => {
+        val mBoard: Board = new Board();
+        mBoard.setUpBoardCopy(boardMove._1);
+        mBoard.makeMoveSequence(move);
+        (mBoard, move)
       })
-      .sortBy(-_.heuristic()) //descending
+      .sortBy(-_._1.heuristic()) //descending
       .map(b => new Node(b, this, level + 1, next))
       .force;
   }

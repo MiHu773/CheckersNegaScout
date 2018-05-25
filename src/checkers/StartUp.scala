@@ -10,14 +10,18 @@ object StartUp {
 
     while (!board.isFinished()) {
       print("Enter move: "); // input form ex. 60 51
+      val x = board.getAllMoveSetsForColor(Type.white)
+      println(board.getAllPossibleMoves(Type.white));
       var input = scala.io.StdIn.readLine();
-      if (!board.checkIfMoveCorrect(input)){
+      if (!board.checkIfMoveCorrect(input, Type.white)){
         println("wrong move!");
       }
       else {
         board.makeMoveSequence(input);
+        board.printBoard();
+        println("enemy making move")
         var enemysMove = negaScout.getBestMove(board);
-        //board.makeMoveSequence(enemysMove);
+        board.makeMoveSequence(enemysMove);
         board.printBoard();
       }
     }
