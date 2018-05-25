@@ -1,4 +1,4 @@
-package checkers
+package checkers.findingNextMove
 
 case class Move (
              start : (Int, Int) = null , var end : (Int, Int) = null,

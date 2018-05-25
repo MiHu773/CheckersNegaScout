@@ -1,5 +1,7 @@
 package checkers
 
+import checkers.findingNextMove.MoveSet
+
 
 object StartUp {
   def main(args: Array[String]): Unit = {
