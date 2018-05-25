@@ -32,13 +32,15 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
     return false
   }
   def removeNonJumpsIfNeeded(list: List[List[Move]]) : List[List[Move]] ={
+    if (list == null) return null
     if (checkIfRemovingNeeded(list))
       list.map(_.filter(_.jump == true)).filter(_.nonEmpty)
     else list.filter(_.nonEmpty)
 
   }
   def removeNull(list: List[List[Move]]): List[List[Move]] = {
-    for (pm <- list)
+    if (list == null) return null
+    for (pm <- list if pm.nonEmpty)
       yield pm.filter(_ != null)
   }
 
@@ -60,6 +62,7 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
 
   def movesToList(): List[List[Move]] = {
     val auxArr = for (m <- findNextMove() if (m.valid)) yield m
+    if (auxArr == null) return null
     auxArr.toList.map(List(_))
   }
 
@@ -77,8 +80,9 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
 
   def findQueenNextMove(): List[List[Move]] = {
    val aux = (for (x <- -1 to 1 if x != 0; y <- - 1 to 1 if y != 0)
-      yield moveQueenCheck((element.posX, element.posY), (x, y), board)) // (collection.breakOut)
-    aux.toList.flatten
+      yield moveQueenCheck((element.posX+x, element.posY+y), (x, y), board)) // (collection.breakOut)
+
+    aux.filter(_ != null).toList.flatten
   }
 
 
@@ -93,7 +97,7 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
           val move = new Move((element.posX, element.posY), nextPos, true, position, true)
           commitMove(move, auxBoard)
 
-          auxBoard.board(move.end._1)(move.end._2) = new Element(settings.man, move.end._1, move.end._2)
+          auxBoard.board(move.end._1)(move.end._2) = new Element(settings.self, move.end._1, move.end._2)
 
           val moveSet : MoveSet = new MoveSet(auxBoard.board(move.end._1)(move.end._2), auxBoard, move)
           val aux = moveSet.jmpsToList()
@@ -102,7 +106,7 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
         }
       else return null
     }
-    if (check(position) == Type.error) return null
+    if (check(position) == Type.error || check(position) == settings.self || check(position) == settings.selfQ ) return null
     else{
       val aux = moveQueenCheck(nextPos, direction, board)
       if (aux != null) return List(List(new Move((element.posX, element.posY), position))) ++ aux
@@ -111,22 +115,6 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
 
   }
 
-
-/*  def moveDirection(position: (Int, Int), direction: (Int, Int), testBoard: Board): Array[Move] = {
-    if (check(position, testBoard) == Type.empty) {
-
-      moveDirection(position + direction, board.makeMove(translateMoveToString() direction))
-    }
-    else if (check(position, testBoard) == Type.error) return
-    else {
-
-    }
-    val auxElement: Element = testBoard(position._1)(position._2)
-    if (auxElement.elementType != null)
-    val nextPosition = position + direction
-
-
-  }*/
 
   def findNextJump(): Array[Move] = {
 
@@ -281,7 +269,8 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
           Type.black,
           Type.blackQueen,
           0,
-          Type.white)
+          Type.white,
+          Type.whiteQueen)
 
       case Type.black =>
         Settings(
@@ -297,7 +286,8 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
           Type.white,
           Type.whiteQueen,
           0,
-          Type.black
+          Type.black,
+          Type.blackQueen
         )
 
     }

@@ -10,7 +10,8 @@ case class Settings (moveSet: MoveSet,
                      other : Type,
                      otherQ : Type,
                      direction : Int,
-                     man : Type = Type.empty)
+                     self : Type = Type.empty,
+                     selfQ : Type = Type.empty)
 {
   val nextRow = element.posX + direction
   val previousRow = element.posX - direction

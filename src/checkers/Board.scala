@@ -14,12 +14,14 @@ class Board() {
 
     board(1)(1) = new Element(black, 1, 1)
   }
+
   def setUpBoard8(): Unit = {
     for (i <- board.indices; j <- board.indices)
       board(i)(j) = new Element(null, i, j)
 
+    board(5)(5) = new Element(black, 5, 5)
     board(3)(3) = new Element(whiteQueen, 3, 3)
-
+    board(6)(0) = new Element(black, 6, 0)
     board(0)(0) = new Element(black, 0, 0)
     board(1)(1) = new Element(black, 1, 1)
     board(5)(1) = new Element(black, 5, 1)
@@ -28,7 +30,7 @@ class Board() {
     board(0)(6) = new Element(black, 0, 6)
     board(2)(6) = new Element(black, 2, 6)
     board(4)(6) = new Element(black, 4, 6)
-    board(4)(4) = new Element(black, 4, 4)
+    board(4)(4) = new Element(white, 4, 4)
   }
 
   def setUpBoard7(): Unit = {
