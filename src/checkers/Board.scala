@@ -242,13 +242,6 @@ class Board() {
     resList;
   }
 
-  def getAllPossibleMovesForColor(color: Type): List[List[List[Move]]] = {
-    for (ms <- getAllMoveSetsForColor(color)) yield {
-      ms.possibleMoves()
-      //.foreach(_.foreach())
-    }
-  }
-
   def getAllPossibleMoves(color: Type): List[String] = {
     val moves = getAllPossibleMovesForColor(color)
       .map(_.map(createStringMove));
