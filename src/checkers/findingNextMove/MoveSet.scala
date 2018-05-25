@@ -8,8 +8,8 @@ import checkers.{Board, Element, Type}
 
 import scala.annotation.tailrec
 
-class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, nextRow : Int, previousRow : Int, nextColumnL : Int,*/) {
-
+class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow : Int, previousRow : Int, nextColumnL : Int,*/)
+{
   val settings: Settings = generateSettings()
   val root: List[MoveSet] = findNextMoveSet()
 
@@ -180,9 +180,8 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
     var auxSet = Set[MoveSet]()
 
     for (mv <- findNextJump() if mv.valid) {
-      val auxBoard: Board = board
+      val auxBoard: Board = new Board()
       auxBoard.setUpBoardCopy(board)
-
       val committedMove: (Element, Board) = commitMove(mv, auxBoard)
 
       val ms: MoveSet = new MoveSet(committedMove._1, committedMove._2, mv)
@@ -253,6 +252,7 @@ class MoveSet(element: Element, val board: Board, lastMove: Move = null /*, next
   }
 
   def generateSettings(): Settings = { // tworzy ustawienia wykorzystywane do obliczania następnego ruchu
+
     element.elementType match {
       case Type.white =>
         Settings(
