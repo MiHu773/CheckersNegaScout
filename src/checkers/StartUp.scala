@@ -5,34 +5,29 @@ import checkers.findingNextMove.MoveSet
 
 object StartUp {
   def main(args: Array[String]): Unit = {
+    var board = new Board();
+    var negaScout = new NegaScout();
+    board.setUpBoard();
+    board.printBoard();
 
-    var board = new Board()
-    //    var negaScout = new NegaScout()
-    board.setUpBoard8()
-    board.printBoard()
-    val ms = new MoveSet(board.board(3)(3), board)
-    board.printAllMoveSetsForColor(Type.whiteQueen)
-    println(ms.removeNonJumpsIfNeeded(ms.findQueenNextMove()).toString())
+    while (!board.isFinished()) {
+      print("Enter move: "); // input form ex. 60 51
+      val x = board.getAllMoveSetsForColor(Type.white)
+      println(board.getAllPossibleMoves(Type.white));
+      var input = scala.io.StdIn.readLine();
+      if (!board.checkIfMoveCorrect(input, Type.white)){
+        println("wrong move!");
+      }
+      else {
+        board.makeMoveSequence(input);
+        board.printBoard();
+        println("enemy making move")
+        var enemysMove = negaScout.getBestMove(board);
+        board.makeMoveSequence(enemysMove);
+        board.printBoard();
+      }
+    }
+
+    print("End of the game!");
   }
-//    board.printBoard()
-
-//    board.printAllMoveSetsForColor(Type.whiteQueen)
-//    while (!board.isFinished()) {
-//      print("Enter move: "); // input form ex. 60 51
-//      var input = scala.io.StdIn.readLine();
-//      if (!board.checkIfMoveCorrect(input)){
-//        println("wrong move!");
-//      }
-//      else {
-//        board.makeMoveSequence(input);
-//        var enemysMove = negaScout.getBestMove(board);
-//        board.makeMoveSequence(enemysMove);
-//        board.printBoard();
-//      }
-//    }
-//
-//    print("End of the game!");
-//  }
-
-
-  }
+}

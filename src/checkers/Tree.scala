@@ -1,5 +1,5 @@
 package checkers
 
-class Tree (head:Node){
+case class Tree (head:Node){
 
 }
