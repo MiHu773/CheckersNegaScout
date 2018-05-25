@@ -8,15 +8,11 @@ import scala.annotation.tailrec
 
 class NegaScout {
   def getBestMove(board: Board): String = {
-    val random = scala.util.Random;
-    val allMoves = board.getAllPossibleMoves(black);
-    val r = random.nextInt(allMoves.length);
-    println(allMoves);
-    println("making move:" + allMoves(r));
     val tree = buildTree(board);
     val movesBest = tree.head.children.map(ns(_, 4, -40, 40,1))
+    println(tree.head.children(tree.head.children.indices.maxBy(movesBest)).boardMove._2)
     return tree.head.children(tree.head.children.indices.maxBy(movesBest)).boardMove._2;//TODO wez najlepszy ruch ale chyba trzeba to zmienic na odpalanie ns z heada
-    //return allMoves(r);
+    //TODO sprawdzic czy robi dobre ruchy
   }
 
   def buildTree(board: Board): Tree = {

@@ -7,7 +7,7 @@ object StartUp {
     var negaScout = new NegaScout();
     board.setUpBoard();
     board.printBoard();
-
+  //TODO sprawdzanie czy koniec gry przed kazdym ruchem
     while (!board.isFinished()) {
       print("Enter move: "); // input form ex. 60 51
       val x = board.getAllMoveSetsForColor(Type.white)

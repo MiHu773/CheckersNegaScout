@@ -76,7 +76,7 @@ case class Board() {
     val finalPositionI = positionsList.last.charAt(0).asDigit;
     val finalPositionJ = positionsList.last.charAt(1).asDigit;
 
-    //checkIfChangeToQueen(finalPositionI, finalPositionJ, board(finalPositionI)(finalPositionJ).elementType); TODO odkomentować jak pojawi sie mozliwy ruch dla krolowych
+    checkIfChangeToQueen(finalPositionI, finalPositionJ, board(finalPositionI)(finalPositionJ).elementType); //TODO odkomentować jak pojawi sie mozliwy ruch dla krolowych
   }
 
   def makeMove(moves: (String, String)): Unit = {
