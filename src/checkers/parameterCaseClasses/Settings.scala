@@ -4,6 +4,16 @@ import checkers.Type.Type
 import checkers.{Element, Type}
 import checkers.findingNextMove.MoveSet
 
+/**
+  * Settings, class which stores settings, such us position, enemy types, next move position etc. for the selected elements.
+  * @param moveSet MoveSet class for which the settings are being set
+  * @param element element on the specified in MoveSet position
+  * @param other enemy men
+  * @param otherQ enemy Queen
+  * @param direction direction in which the current elements arr movigng(-1 for white, 1 for black)
+  * @param self the type of the element man
+  * @param selfQ the type of the element Queen
+  */
 case class Settings (moveSet: MoveSet,
                      element : Element,
 

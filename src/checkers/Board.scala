@@ -139,8 +139,6 @@ class Board() {
     val posMove = getAllPossibleMoves(color);
     //println("possible player moves:" + posMove)
     if (posMove.contains(moves))
-      return true;
-    false;
   }
 
   /**

@@ -3,17 +3,26 @@ package checkers.findingNextMove
 import java.util
 
 import checkers.Type.Type
-import checkers.parameterCaseClasses.{Setting, Settings}
+import checkers.parameterCaseClasses.Settings
 import checkers.{Board, Element, Type}
 
 import scala.annotation.tailrec
 
+/**
+  * Class which is used for finding possible moves for game pieces. When initialized it automatically
+  * creates a tree structure of other MoveSets.
+  * @param element element for which the moves will be searched
+  * @param board board on which ss the element
+  * @param lastMove used internally for the MoveSet class, leave null
+  */
 class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow : Int, previousRow : Int, nextColumnL : Int,*/)
 {
   val settings: Settings = generateSettings()
   val root: List[MoveSet] = findNextMoveSet()
 
-
+  /**
+    * Function displaying possible moves for an element
+    */
   def printPossibleMoves(): Unit = {
 
     for ((pm, i) <- possibleMoves() zip (0 until possibleMoves().length)) {
@@ -25,25 +34,46 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     }
   }
 
+  /**
+    * Function, which checks whether removing unnecessary elements from move list is required.
+    * It checks if there are any jumps.
+    * @param list list of lists of moves
+    * @return if there are any jumps, true, else false
+    */
   def checkIfRemovingNeeded(list: List[List[Move]]) : Boolean ={
     for(list <- list; move <- list)
        if (move.jump == true)
          return true
     return false
   }
+
+  /**
+    * Method removes moves that are not jumps, from the list, if there is at least one jump in the move list.
+    * @param list list of lists of moves
+    * @return list of lists of moves without moves, which not jump
+    */
   def removeNonJumpsIfNeeded(list: List[List[Move]]) : List[List[Move]] ={
     if (list == null) return null
     if (checkIfRemovingNeeded(list))
       list.map(_.filter(_.jump == true)).filter(_.nonEmpty)
     else list.filter(_.nonEmpty)
-
   }
+
+  /**
+    * Due to the way the MoveSet class works, it some times adds null elements which have to be remowed
+    * @param list list of list of moves
+    * @return list of lists of moves without null elements
+    */
   def removeNull(list: List[List[Move]]): List[List[Move]] = {
     if (list == null) return null
     for (pm <- list if pm.nonEmpty)
       yield pm.filter(_ != null)
   }
 
+  /**
+    * lists all possible moves for an element
+    * @return complete list of lists of moves, for the element
+    */
   def possibleMoves(): List[List[Move]] = {
     if (element.elementType == Type.whiteQueen || element.elementType == Type.blackQueen)
       removeNonJumpsIfNeeded(findQueenNextMove())
@@ -51,21 +81,33 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
       removeNonJumpsIfNeeded(findManNextMove())
   }
 
+  /**
+    * finds moves for a simple man element
+    * @return a list of lists of moves and jumps, for a single MoveSet class
+    */
   def findManNextMove() : List[List[Move]] = {
     val x = removeNull(jmpsToList())
     val y = movesToList()
     if (x.head.nonEmpty) {
       x ++ y
-    } //.filter(_.jumpOver != null)
+    }
     else y
   }
 
+  /**
+    * Due to the way the MoveSet class works, it creates a tree which has to be brought down to a simple list of lists
+    * @return list of lists of moves
+    */
   def movesToList(): List[List[Move]] = {
     val auxArr = for (m <- findNextMove() if (m.valid)) yield m
     if (auxArr == null) return null
     auxArr.toList.map(List(_))
   }
 
+  /**
+    * Due to the way the MoveSet class works, it creates a tree which has to be brought down to a simple list of lists
+    * @return list of lists of moves that are jumps
+    */
   def jmpsToList(): List[List[Move]] = {
 
     if (root.length == 0) return List(List(lastMove))
@@ -78,6 +120,11 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     x.flatten
   }
 
+  /**
+    * Finds moves for the queen, in the the "free move" phase, before taking out the first enemy piece.
+    * It checks the moves in 4 directions.
+    * @return list of lists of moves for Queen
+    */
   def findQueenNextMove(): List[List[Move]] = {
    val aux = (for (x <- -1 to 1 if x != 0; y <- - 1 to 1 if y != 0)
       yield moveQueenCheck((element.posX+x, element.posY+y), (x, y), board)) // (collection.breakOut)
@@ -85,7 +132,13 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     aux.filter(_ != null).toList.flatten
   }
 
-
+  /**
+    * Checks if the current position can be taken by Queen
+    * @param position position to check
+    * @param direction direction in which the Queen is moving
+    * @param board board on which the Queen is moving
+    * @return List of lists of moves, in which is the found move
+    */
   private def moveQueenCheck(position: (Int, Int), direction: (Int, Int), board: Board): List[List[Move]] = {
   val nextPos = ((position._1 + direction._1), (position._2 + direction._2))
   if (check(position) == settings.other || check(position) == settings.otherQ) {
@@ -115,7 +168,10 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
 
   }
 
-
+  /**
+    * Checks for jumps. In four directions.
+    * @return Array of jumps, if they are possible.
+    */
   def findNextJump(): Array[Move] = {
     //    ================================================================================================================================================================================================
     //    bicie po skosie w kierunku przeciwnika
@@ -152,6 +208,10 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     Array(JmpNLFunc, JmpNRFunc, JmpPLFunc, JmpPRFunc)
   }
 
+  /**
+    * Checks for moves. In two directions.
+    * @return Array of moves, if they are possible.
+    */
   def findNextMove(): Array[Move] = {
 
     //  ================================================================================================================================================================================================
@@ -168,10 +228,11 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     Array(MNLFunc, MNRFunc)
   }
 
-  def findAllMoveSets(): List[MoveSet] = {
-    print(findNextMoveSet())
-    findNextMoveSet()
-  }
+
+  /**
+    * Creates a new MoveSet, in the new position determined by move.
+    * @return List of MoveSets
+    */
 
   def findNextMoveSet(): List[MoveSet] = {
     if (settings.element.elementType == Type.blackQueen || settings.element.elementType == Type.whiteQueen)
@@ -191,11 +252,11 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
   }
 
   /**
-    * Funkcja wykonuje symulacje wyglądu planszy po wykonaniu ruchu
+    * Function creating a simulation of the board after move.
     *
-    * @param mv    - ruch do wykonania
-    * @param board - plansza na której ma być wykonane przesunięcie
-    * @return - tuple(Element, Board), gdzie element to figura po przesunięciu, a boardz planaz po wykonaniu przesunięcia
+    * @param mv move to be done
+    * @param board board on which the move will be carried out
+    * @return tuple(Element, Board), where element is the element after move, board is the state of the board after move
     */
   def commitMove(mv: Move, board: Board): (Element, Board) = {
     board.makeMove(translateMoveToString(mv))
@@ -207,10 +268,10 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
   }
 
   /**
-    * funkcja tłumaczy współrzędne zawarte w parametrze klasy Move na String
+    * Simple translation function for translating the move class into string
     *
-    * @param mv - ruch do wykonania
-    * @return -
+    * @param mv move to be committed
+    * @return the string code for the move
     */
   def translateMoveToString(mv: Move): (String, String) = {
     (mv.start._1.toString + mv.start._2.toString, mv.end._1.toString + mv.end._2.toString)
@@ -221,10 +282,10 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
   }
 
   /**
-    * funkcja sprawdzająca jaki jest element na danej pozycji
+    * Function checking what type of element is on the specified position.
     *
-    * @param position - pozycja do sprawdzenia
-    * @return - typ elementu zwrócony jako Type
+    * @param position position to be checked
+    * @return type of the element on position (white, whiteQueen, black, blackQueen, error - if the position is not on the board, empty - if the given position is empty.
     */
   def check(position: (Int, Int), testBoard: Board = board /*, other:String*/): Type = {
     if (position._1 < 0 || position._2 > 7 || position._1 > 7 || position._2 < 0) {
@@ -251,6 +312,10 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     else Type.blackQueen
   }
 
+  /**
+    * Generate settings for the element, for which the moves are searched.
+    * @return Generated settings.
+    */
   def generateSettings(): Settings = { // tworzy ustawienia wykorzystywane do obliczania następnego ruchu
 
     element.elementType match {
