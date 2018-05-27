@@ -6,114 +6,6 @@ import checkers.findingNextMove.{Move, MoveSet}
 class Board() {
   val board = Array.ofDim[Element](8, 8);
 
-  def setUpBoard9(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    board(3)(3) = new Element(whiteQueen, 3, 3)
-
-    board(1)(1) = new Element(black, 1, 1)
-  }
-
-  def setUpBoard8(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    board(5)(5) = new Element(black, 5, 5)
-    board(3)(3) = new Element(whiteQueen, 3, 3)
-    board(6)(0) = new Element(black, 6, 0)
-    board(0)(0) = new Element(black, 0, 0)
-    board(1)(1) = new Element(black, 1, 1)
-    board(5)(1) = new Element(black, 5, 1)
-    board(7)(1) = new Element(black, 7, 1)
-
-    board(0)(6) = new Element(black, 0, 6)
-    board(2)(6) = new Element(black, 2, 6)
-    board(4)(6) = new Element(black, 4, 6)
-    board(4)(4) = new Element(white, 4, 4)
-  }
-
-  def setUpBoard7(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    for (i <- 0 to 1; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
-      board(i)(j) = new Element(black, i, j)
-
-    for (i <- 6 to 7; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
-      board(i)(j) = new Element(white, i, j)
-
-    board(6)(4) = new Element(white, 6, 4)
-    board(2)(0) = new Element(white, 2, 0)
-    board(3)(1) = new Element(white, 3, 1)
-
-    board(5)(5) = new Element(black, 5, 5)
-    board(3)(5) = new Element(black, 3, 5)
-    board(3)(3) = new Element(black, 3, 3)
-    board(5)(7) = new Element(white, 5, 7)
-
-  }
-
-  def setUpBoard6(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    board(1)(2) = new Element(white, 1, 2)
-
-    board(2)(1) = new Element(black, 2, 1)
-    board(4)(3) = new Element(black, 4, 3)
-    board(6)(5) = new Element(black, 6, 5)
-    board(6)(3) = new Element(black, 6, 3)
-    board(2)(3) = new Element(black, 2, 3)
-  }
-
-  def setUpBoard4(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    board(3)(2) = new Element(white, 3, 2)
-
-    board(4)(3) = new Element(black, 4, 3)
-    board(2)(3) = new Element(black, 2, 3)
-    board(2)(5) = new Element(black, 2, 5)
-
-  }
-
-  def setUpBoard5(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    board(2)(2) = new Element(white, 0, 0)
-
-    board(1)(1) = new Element(black, 1, 1)
-    board(3)(3) = new Element(black, 3, 3)
-    board(1)(3) = new Element(black, 1, 3)
-    board(1)(5) = new Element(black, 1, 5)
-
-  }
-
-  def setUpBoard10(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    for (i <- 2 to 2; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
-      board(i)(j) = new Element(black, i, j)
-
-    board(3)(1) = new Element(white, 3, 1)
-    board(2)(0) = new Element(null, 3, 1)
-  }
-
-  def setUpBoard(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    for (i <- 0 to 2; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
-      board(i)(j) = new Element(black, i, j)
-
-    for (i <- 5 to 7; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
-      board(i)(j) = new Element(white, i, j)
-  }
-
   def setUpBoardCopy(board: Board): Unit = {
     for (i <- board.board.indices; j <- board.board.indices)
       this.board(i)(j) = new Element(board.board(i)(j).elementType, board.board(i)(j).posX, board.board(i)(j).posY)
@@ -123,8 +15,8 @@ class Board() {
     val posMove = getAllPossibleMoves(color);
     //println("possible player moves:" + posMove)
     if (posMove.contains(moves))
-      return true;
-    false;
+      return true
+    false
   }
 
   def makeMoveSequence(moves: String): Unit = {

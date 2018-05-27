@@ -1,6 +1,6 @@
 package checkers
 
-import Type._;
+import Type._
 import util.control.Breaks._
 
 object StartUp {
