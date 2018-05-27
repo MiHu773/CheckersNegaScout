@@ -3,7 +3,14 @@ package checkers
 import Type._;
 import util.control.Breaks._
 
+/**
+  * StartUp object for running the program
+  */
 object StartUp {
+  /**
+    * Main function handling the game
+    * @param args null
+    */
   def main(args: Array[String]): Unit = {
     var board = new Board()
     val negaScout = new NegaScout()

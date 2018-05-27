@@ -3,6 +3,9 @@ package checkers
 import checkers.Type._
 import checkers.findingNextMove.{Move, MoveSet}
 
+/**
+  * Class containing board for checkers and functions for applying moves
+  */
 class Board() {
   val board = Array.ofDim[Element](8, 8);
 
@@ -103,6 +106,9 @@ class Board() {
     board(2)(0) = new Element(null, 3, 1)
   }
 
+  /**
+    * Configuring a board before the game
+    */
   def setUpBoard(): Unit = {
     for (i <- board.indices; j <- board.indices)
       board(i)(j) = new Element(null, i, j)
@@ -114,11 +120,21 @@ class Board() {
       board(i)(j) = new Element(white, i, j)
   }
 
+  /**
+    * Copying board configuration
+    * @param board board to copy
+    */
   def setUpBoardCopy(board: Board): Unit = {
     for (i <- board.board.indices; j <- board.board.indices)
       this.board(i)(j) = new Element(board.board(i)(j).elementType, board.board(i)(j).posX, board.board(i)(j).posY)
   }
 
+  /**
+    * Checking if move made by human player is correct
+    * @param moves move made by player
+    * @param color player's side
+    * @return true if move is in the list of possible moves else false
+    */
   def checkIfMoveCorrect(moves: String, color: Type.Type): Boolean = {
     val posMove = getAllPossibleMoves(color);
     //println("possible player moves:" + posMove)
@@ -127,6 +143,10 @@ class Board() {
     false;
   }
 
+  /**
+    * Making sequence of moves (including jumping)
+    * @param moves moves to make
+    */
   def makeMoveSequence(moves: String): Unit = {
     val positionsList = moves.split(" ")
     for (i <- 1 until positionsList.length) {
@@ -138,6 +158,10 @@ class Board() {
     checkIfChangeToQueen(finalPositionI, finalPositionJ, board(finalPositionI)(finalPositionJ).elementType);
   }
 
+  /**
+    * Making single move (one jump or one step)
+    * @param moves move to make
+    */
   def makeMove(moves: (String, String)): Unit = {
     val i1 = moves._1.charAt(0).asDigit
     val j1 = moves._1.charAt(1).asDigit
@@ -177,6 +201,12 @@ class Board() {
     } else board(i1)(j1) = new Element(null, i1, j1)
   }
 
+  /**
+    * Changing tile to queen if checker gets to the barier
+    * @param i row
+    * @param j column
+    * @param value player's side
+    */
   def checkIfChangeToQueen(i: Int, j: Int, value: Type.Type): Unit = {
     if (i == 7 && value == black) {
       board(i)(j) = new Element(blackQueen, i, j);
@@ -186,21 +216,38 @@ class Board() {
     }
   }
 
-
+  /**
+    * Getting number of checkers of specific type
+    * @param mType type for checking
+    * @return number of checkers of specific types
+    */
   def getNumberOfElems(mType: Type.Type): Int = {
     val amountsInR = board.map(r => r.count(_.elementType == mType))
     amountsInR.sum;
   }
 
+  /**
+    * Getting element at x,y coordinates
+    * @param x row
+    * @param y column
+    * @return element at x,y
+    */
   def getElement(x: Int, y: Int): Element = {
     board(x)(y)
   }
 
+  /**
+    * Removing element after jump move from the enemy
+    * @param i row
+    * @param j column
+    */
   def removeTile(i: Int, j: Int): Unit = {
     board(i)(j) = new Element(null, i, j)
   }
 
-
+  /**
+    * Printing board
+    */
   def printBoard(): Unit = {
     println("  0 1 2 3 4 5 6 7");
     for (i <- board.indices) {
@@ -212,6 +259,11 @@ class Board() {
     }
   }
 
+  /**
+    * Checking if game is finished (0 elements of one of players or player can't make move)
+    * @param color player's side
+    * @return true if end of the game else false
+    */
   def isFinished(color: Type.Type): Boolean = {
     if ((getNumberOfElems(white) + getNumberOfElems(whiteQueen) == 0) || (getNumberOfElems(black) + getNumberOfElems(blackQueen) == 0))
       return true;
@@ -219,7 +271,9 @@ class Board() {
     false;
   }
 
+
   def printAllMoveSetsForColor(color: Type) = for (x <- getAllMoveSetsForColor(color)) x.printPossibleMoves()
+
 
   def getAllMoveSetsForColor(color: Type): List[MoveSet] = {
     //val res: List[MoveSet] = List[MoveSet]()
@@ -228,11 +282,21 @@ class Board() {
     resList;
   }
 
+  /**
+    * Getting all possible moves for player
+    * @param color player's side
+    * @return List of all possible moves
+    */
   def getAllPossibleMoves(color: Type.Type): List[String] = {
     if (color == white) return getAllPossibleMovesOfType(white) ++ getAllPossibleMovesOfType(whiteQueen);
     getAllPossibleMovesOfType(black) ++ getAllPossibleMovesOfType(blackQueen);
   }
 
+  /**
+    * Getting all possible for one type of tiles
+    * @param color type of tile
+    * @return List of all possible moves for type of tile
+    */
   def getAllPossibleMovesOfType(color: Type): List[String] = {
     val moves = getAllPossibleMovesForColor(color)
       .map(_.map(createStringMove));
@@ -247,12 +311,21 @@ class Board() {
     }
   }
 
+  /**
+    * Translating between MoveSet notation and String notation
+    * @param moves Move list
+    * @return moves in String list
+    */
   def createStringMove(moves: List[Move]): String = {
     if (moves.isEmpty) return "";
     val check:String = moves.map(m => m.end._1.toString + m.end._2.toString + " ").reduce((x, y) => y+x)
     moves.last.start._1.toString + moves.last.start._2.toString + " " + check.substring(0, check.length - 1)
   }
 
+  /**
+    * Heuristic function for NegaScout algorithm
+    * @return heuristic value of board
+    */
   def heuristic(): Int = {
     getNumberOfElems(black) + getNumberOfElems(blackQueen) * 3 - getNumberOfElems(white) + getNumberOfElems(whiteQueen) * 3;
   }
