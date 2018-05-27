@@ -3,7 +3,7 @@ package checkers
 import Type._;
 
 case class Node(boardMove: (Board, String), parent: Node, level: Int, colour: Type.Type) {
-  val maxLevel = 5;
+  val maxLevel = 4;
   val next = {
     if (colour == white) black;
     else white;

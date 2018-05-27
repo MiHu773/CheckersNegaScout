@@ -92,6 +92,17 @@ class Board() {
 
   }
 
+  def setUpBoard10(): Unit = {
+    for (i <- board.indices; j <- board.indices)
+      board(i)(j) = new Element(null, i, j)
+
+    for (i <- 2 to 2; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
+      board(i)(j) = new Element(black, i, j)
+
+    board(3)(1) = new Element(white, 3, 1)
+    board(2)(0) = new Element(null, 3, 1)
+  }
+
   def setUpBoard(): Unit = {
     for (i <- board.indices; j <- board.indices)
       board(i)(j) = new Element(null, i, j)
@@ -110,7 +121,7 @@ class Board() {
 
   def checkIfMoveCorrect(moves: String, color: Type.Type): Boolean = {
     val posMove = getAllPossibleMoves(color);
-    println("possible player moves:" + posMove)
+    //println("possible player moves:" + posMove)
     if (posMove.contains(moves))
       return true;
     false;
@@ -119,13 +130,12 @@ class Board() {
   def makeMoveSequence(moves: String): Unit = {
     val positionsList = moves.split(" ")
     for (i <- 1 until positionsList.length) {
-     // TODO change back makeMove(positionsList(i - 1), positionsList(i))
-      makeMove2(positionsList(i - 1), positionsList(i))
+      makeMove(positionsList(i - 1), positionsList(i))
     }
     val finalPositionI = positionsList.last.charAt(0).asDigit;
     val finalPositionJ = positionsList.last.charAt(1).asDigit;
 
-    checkIfChangeToQueen(finalPositionI, finalPositionJ, board(finalPositionI)(finalPositionJ).elementType); //TODO odkomentować jak pojawi sie mozliwy ruch dla krolowych
+    checkIfChangeToQueen(finalPositionI, finalPositionJ, board(finalPositionI)(finalPositionJ).elementType);
   }
 
   def makeMove(moves: (String, String)): Unit = {
@@ -136,61 +146,36 @@ class Board() {
     board(i2)(j2) = new Element(board(i1)(j1).elementType, i2, j2)
     if (math.abs(i1 - i2) > 1) { //jump
       if ((i2 > i1) && (j2 > j1)) {
-        var j = j1
-        for (i <- i1 to (i2 - 1)) {
+        //for (i <- i1 until i2; j <- j1 until j2)
+        for {
+          (i, j) <- (i1 until i2) zip (j1 until j2)
+        } {
           removeTile(i, j)
-          j += 1
         }
       } else if ((i2 > i1) && (j2 < j1)) {
-        var j = j1
-        for (i <- i1 to (i2 - 1)) {
+        //for (i <- i1 until i2; j <- j1 until j2 by -1) {
+        for {
+          (i, j) <- (i1 until i2) zip (j1 until j2 by -1)
+        } {
           removeTile(i, j)
-          j -= 1
         }
       } else if ((i2 < i1) && (j2 > j1)) {
-        var j = j2 - 1
-        for (i <- (i2 + 1) to i1) {
+        //for (i <- i1 until i2 by -1; j <- j1 until j2) {
+        for {
+          (i, j) <- (i1 until i2 by -1) zip (j1 until j2)
+        } {
           removeTile(i, j)
-          j -= 1
         }
       } else {
-        var j = j2 + 1;
-        for (i <- (i2 + 1) to i1) {
-          removeTile(i, j);
-          j += 1;
+        //for (i <- i1 until i2 by -1; j <- j1 until j2 by -1) {
+        for {
+          (i, j) <- (i1 until i2 by -1) zip (j1 until j2 by -1)
+        } {
+          removeTile(i, j)
         }
       }
     } else board(i1)(j1) = new Element(null, i1, j1)
   }
-
-  def makeMove2(moves: (String, String)): Unit = {
-    val i1 = moves._1.charAt(0).asDigit
-    val j1 = moves._1.charAt(1).asDigit
-    val i2 = moves._2.charAt(0).asDigit
-    val j2 = moves._2.charAt(1).asDigit
-    board(i2)(j2) = new Element(board(i1)(j1).elementType, i2, j2)
-    if (math.abs(i1 - i2) > 1) { //jump
-      if ((i2 > i1) && (j2 > j1)) {
-        for (i <- i1 until i2; j<-j1 until j2) {
-          removeTile(i, j)
-        }
-      } else if ((i2 > i1) && (j2 < j1)) {
-        for (i <- i1 until i2; j<- j1 until j2 by -1) { //TODO czy można tak do tylu?
-          removeTile(i, j)
-        }
-      } else if ((i2 < i1) && (j2 > j1)) {
-        for (i <- i1 until i2 by -1; j <- j1 until j2) {
-          removeTile(i, j)
-        }
-      } else {
-        for (i <- i1 until i2 by -1; j<-j1 until j2 by -1) {
-          removeTile(i, j);
-        }
-      }
-    } else board(i1)(j1) = new Element(null, i1, j1)
-  }
-
-
 
   def checkIfChangeToQueen(i: Int, j: Int, value: Type.Type): Unit = {
     if (i == 7 && value == black) {
@@ -227,9 +212,10 @@ class Board() {
     }
   }
 
-  def isFinished(): Boolean = {
+  def isFinished(color: Type.Type): Boolean = {
     if ((getNumberOfElems(white) + getNumberOfElems(whiteQueen) == 0) || (getNumberOfElems(black) + getNumberOfElems(blackQueen) == 0))
       return true;
+    if (getAllPossibleMoves(color).isEmpty) return true
     false;
   }
 
@@ -242,7 +228,12 @@ class Board() {
     resList;
   }
 
-  def getAllPossibleMoves(color: Type): List[String] = {
+  def getAllPossibleMoves(color: Type.Type): List[String] = {
+    if (color == white) return getAllPossibleMovesOfType(white) ++ getAllPossibleMovesOfType(whiteQueen);
+    getAllPossibleMovesOfType(black) ++ getAllPossibleMovesOfType(blackQueen);
+  }
+
+  def getAllPossibleMovesOfType(color: Type): List[String] = {
     val moves = getAllPossibleMovesForColor(color)
       .map(_.map(createStringMove));
     moves.flatten
@@ -257,12 +248,9 @@ class Board() {
   }
 
   def createStringMove(moves: List[Move]): String = {
-    var moveString = "";
-    if (moves.isEmpty) return moveString;
-    for (move <- moves) {
-      moveString = move.end._1.toString + move.end._2.toString + " " + moveString;
-    }
-    moves.last.start._1.toString + moves.last.start._2.toString + " " + moveString.substring(0, moveString.length - 1)
+    if (moves.isEmpty) return "";
+    val check:String = moves.map(m => m.end._1.toString + m.end._2.toString + " ").reduce((x, y) => y+x)
+    moves.last.start._1.toString + moves.last.start._2.toString + " " + check.substring(0, check.length - 1)
   }
 
   def heuristic(): Int = {

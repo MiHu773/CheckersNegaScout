@@ -9,8 +9,8 @@ import scala.annotation.tailrec
 class NegaScout {
   def getBestMove(board: Board): String = {
     val tree = buildTree(board);
-    val movesBest = tree.head.children.map(ns(_, 4, -40, 40,1))
-    println(tree.head.children(tree.head.children.indices.maxBy(movesBest)).boardMove._2)
+    val movesBest = tree.head.children.map(ns(_, 3, -40, 40,1))
+    //println(tree.head.children(tree.head.children.indices.maxBy(movesBest)).boardMove._2)
     return tree.head.children(tree.head.children.indices.maxBy(movesBest)).boardMove._2;//TODO wez najlepszy ruch ale chyba trzeba to zmienic na odpalanie ns z heada
     //TODO sprawdzic czy robi dobre ruchy
   }
