@@ -35,29 +35,12 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
   }
 
   /**
-    * Function, which checks whether removing unnecessary elements from move list is required.
-    * It checks if there are any jumps.
-    * @param list list of lists of moves
-    * @return if there are any jumps, true, else false
+    * Method removes empty elements from list
+    * @param list list to be filtered
+    * @return list of lists of moves with removed empty elements
     */
-  def checkIfRemovingNeeded(list: List[List[Move]]) : Boolean ={
-    for(list <- list; move <- list)
-       if (move.jump == true)
-         return true
-    return false
-  }
+  def removeEmpty(list: List[List[Move]]) : List[List[Move]] = list.filter(_.nonEmpty)
 
-  /**
-    * Method removes moves that are not jumps, from the list, if there is at least one jump in the move list.
-    * @param list list of lists of moves
-    * @return list of lists of moves without moves, which not jump
-    */
-  def removeNonJumpsIfNeeded(list: List[List[Move]]) : List[List[Move]] ={
-    if (list == null) return null
-    if (checkIfRemovingNeeded(list))
-      list.map(_.filter(_.jump == true)).filter(_.nonEmpty)
-    else list.filter(_.nonEmpty)
-  }
 
   /**
     * Due to the way the MoveSet class works, it some times adds null elements which have to be remowed
@@ -76,9 +59,9 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     */
   def possibleMoves(): List[List[Move]] = {
     if (element.elementType == Type.whiteQueen || element.elementType == Type.blackQueen)
-      removeNonJumpsIfNeeded(findQueenNextMove())
+      removeEmpty(findQueenNextMove())
     else
-      removeNonJumpsIfNeeded(findManNextMove())
+      removeEmpty(findManNextMove())
   }
 
   /**
@@ -126,7 +109,7 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     * @return list of lists of moves for Queen
     */
   def findQueenNextMove(): List[List[Move]] = {
-   val aux = (for (x <- -1 to 1 if x != 0; y <- - 1 to 1 if y != 0)
+    val aux = (for (x <- -1 to 1 if x != 0; y <- - 1 to 1 if y != 0)
       yield moveQueenCheck((element.posX+x, element.posY+y), (x, y), board)) // (collection.breakOut)
 
     aux.filter(_ != null).toList.flatten
@@ -140,23 +123,23 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     * @return List of lists of moves, in which is the found move
     */
   private def moveQueenCheck(position: (Int, Int), direction: (Int, Int), board: Board): List[List[Move]] = {
-  val nextPos = ((position._1 + direction._1), (position._2 + direction._2))
-  if (check(position) == settings.other || check(position) == settings.otherQ) {
+    val nextPos = ((position._1 + direction._1), (position._2 + direction._2))
+    if (check(position) == settings.other || check(position) == settings.otherQ) {
 
       if (check(nextPos) == Type.empty)
-        {
-          val auxBoard: Board = new Board()
-          auxBoard.setUpBoardCopy(board)
-          val move = new Move((element.posX, element.posY), nextPos, true, position, true)
-          commitMove(move, auxBoard)
+      {
+        val auxBoard: Board = new Board()
+        auxBoard.setUpBoardCopy(board)
+        val move = new Move((element.posX, element.posY), nextPos, true, position, true)
+        commitMove(move, auxBoard)
 
-          auxBoard.board(move.end._1)(move.end._2) = new Element(settings.self, move.end._1, move.end._2)
+        auxBoard.board(move.end._1)(move.end._2) = new Element(settings.self, move.end._1, move.end._2)
 
-          val moveSet : MoveSet = new MoveSet(auxBoard.board(move.end._1)(move.end._2), auxBoard, move)
-          val aux = moveSet.jmpsToList()
+        val moveSet : MoveSet = new MoveSet(auxBoard.board(move.end._1)(move.end._2), auxBoard, move)
+        val aux = moveSet.jmpsToList()
 
-          return moveSet.jmpsToList()
-        }
+        return moveSet.jmpsToList()
+      }
       else return null
     }
     if (check(position) == Type.error || check(position) == settings.self || check(position) == settings.selfQ ) return null

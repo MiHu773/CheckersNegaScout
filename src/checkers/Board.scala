@@ -9,103 +9,6 @@ import checkers.findingNextMove.{Move, MoveSet}
 class Board() {
   val board = Array.ofDim[Element](8, 8);
 
-  def setUpBoard9(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    board(3)(3) = new Element(whiteQueen, 3, 3)
-
-    board(1)(1) = new Element(black, 1, 1)
-  }
-
-  def setUpBoard8(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    board(5)(5) = new Element(black, 5, 5)
-    board(3)(3) = new Element(whiteQueen, 3, 3)
-    board(6)(0) = new Element(black, 6, 0)
-    board(0)(0) = new Element(black, 0, 0)
-    board(1)(1) = new Element(black, 1, 1)
-    board(5)(1) = new Element(black, 5, 1)
-    board(7)(1) = new Element(black, 7, 1)
-
-    board(0)(6) = new Element(black, 0, 6)
-    board(2)(6) = new Element(black, 2, 6)
-    board(4)(6) = new Element(black, 4, 6)
-    board(4)(4) = new Element(white, 4, 4)
-  }
-
-  def setUpBoard7(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    for (i <- 0 to 1; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
-      board(i)(j) = new Element(black, i, j)
-
-    for (i <- 6 to 7; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
-      board(i)(j) = new Element(white, i, j)
-
-    board(6)(4) = new Element(white, 6, 4)
-    board(2)(0) = new Element(white, 2, 0)
-    board(3)(1) = new Element(white, 3, 1)
-
-    board(5)(5) = new Element(black, 5, 5)
-    board(3)(5) = new Element(black, 3, 5)
-    board(3)(3) = new Element(black, 3, 3)
-    board(5)(7) = new Element(white, 5, 7)
-
-  }
-
-  def setUpBoard6(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    board(1)(2) = new Element(white, 1, 2)
-
-    board(2)(1) = new Element(black, 2, 1)
-    board(4)(3) = new Element(black, 4, 3)
-    board(6)(5) = new Element(black, 6, 5)
-    board(6)(3) = new Element(black, 6, 3)
-    board(2)(3) = new Element(black, 2, 3)
-  }
-
-  def setUpBoard4(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    board(3)(2) = new Element(white, 3, 2)
-
-    board(4)(3) = new Element(black, 4, 3)
-    board(2)(3) = new Element(black, 2, 3)
-    board(2)(5) = new Element(black, 2, 5)
-
-  }
-
-  def setUpBoard5(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    board(2)(2) = new Element(white, 0, 0)
-
-    board(1)(1) = new Element(black, 1, 1)
-    board(3)(3) = new Element(black, 3, 3)
-    board(1)(3) = new Element(black, 1, 3)
-    board(1)(5) = new Element(black, 1, 5)
-
-  }
-
-  def setUpBoard10(): Unit = {
-    for (i <- board.indices; j <- board.indices)
-      board(i)(j) = new Element(null, i, j)
-
-    for (i <- 2 to 2; j <- board.indices; if i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1)
-      board(i)(j) = new Element(black, i, j)
-
-    board(3)(1) = new Element(white, 3, 1)
-    board(2)(0) = new Element(null, 3, 1)
-  }
-
   /**
     * Configuring a board before the game
     */
@@ -271,10 +174,19 @@ class Board() {
     false;
   }
 
+  /**
+    * Prints all moves for defined piece type
+    * @param color piece Type
+    */
+  def printAllMoveSetsForColor(color: Type) = {
+    for (x <- getAllMoveSetsForColor(color)) x.printPossibleMoves()
+  }
 
-  def printAllMoveSetsForColor(color: Type) = for (x <- getAllMoveSetsForColor(color)) x.printPossibleMoves()
-
-
+  /**
+    * Lists MoveSet for each object of Type given in parameter
+    * @param color Type of the elements for which we are searching for MoveSets
+    * @return List of MoveSets
+    */
   def getAllMoveSetsForColor(color: Type): List[MoveSet] = {
     //val res: List[MoveSet] = List[MoveSet]()
     val res = for (x <- board.indices; y <- board.indices if board(x)(y).elementType == color) yield new MoveSet(board(x)(y), this);
@@ -290,7 +202,10 @@ class Board() {
   def getAllPossibleMoves(color: Type.Type): List[String] = {
     if (color == white) return getAllPossibleMovesOfType(white) ++ getAllPossibleMovesOfType(whiteQueen);
     getAllPossibleMovesOfType(black) ++ getAllPossibleMovesOfType(blackQueen);
+
+
   }
+
 
   /**
     * Getting all possible for one type of tiles
@@ -298,18 +213,17 @@ class Board() {
     * @return List of all possible moves for type of tile
     */
   def getAllPossibleMovesOfType(color: Type): List[String] = {
-    val moves = getAllPossibleMovesForColor(color)
+    def getAllPossibleMovesForColor(color: Type): List[List[List[Move]]] = {
+      for (ms <- getAllMoveSetsForColor(color)) yield {
+        ms.possibleMoves()
+      }
+    }
+    val moves = removeNonJumpsIfNeeded(getAllPossibleMovesForColor(color))
       .map(_.map(createStringMove));
     moves.flatten
-
-
   }
 
-  def getAllPossibleMovesForColor(color: Type): List[List[List[Move]]] = {
-    for (ms <- getAllMoveSetsForColor(color)) yield {
-      ms.possibleMoves()
-    }
-  }
+
 
   /**
     * Translating between MoveSet notation and String notation
@@ -328,5 +242,35 @@ class Board() {
     */
   def heuristic(): Int = {
     getNumberOfElems(black) + getNumberOfElems(blackQueen) * 3 - getNumberOfElems(white) + getNumberOfElems(whiteQueen) * 3;
+  }
+
+  /**
+    * Function, which checks whether removing unnecessary elements from move list is required.
+    * It checks if there are any jumps.
+    * @param list list of lists of moves
+    * @return if there are any jumps, true, else false
+    */
+  def checkIfRemovingNeeded(list: List[List[List[Move]]]) : Boolean ={
+    for(outer <- list; inner <- outer; move <- inner)
+    {
+      if (move.jump == true)
+        return true
+    }
+    return false
+  }
+
+  /**
+    * Method removes moves that are not jumps, from the list, if there is at least one jump in the move list.
+    * @param list list of lists of moves
+    * @return list of lists of lists of moves without moves, which are not jump
+    */
+  def removeNonJumpsIfNeeded(list: List[List[List[Move]]]) : List[List[List[Move]]] ={
+    if (list == null) return null
+    if (checkIfRemovingNeeded(list))
+      list.map(_.map(_.filter(_.jump == true)))
+        .map(_.filter(_.nonEmpty))
+        .filter(_.nonEmpty)
+    else list.map(_.filter(_.nonEmpty))
+      .filter(_.nonEmpty)
   }
 }
