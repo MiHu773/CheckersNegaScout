@@ -6,6 +6,9 @@ import Type._
 
 import scala.annotation.tailrec
 
+/**
+  * Class implementing NegaScout algorithm
+  */
 class NegaScout {
   /**
     * Getting best move for computer player
