@@ -1,2 +1,2 @@
-# CheckersNegaScout
-Checkers implemented in Scala with Nega Scout algorithm
+# Checkers with NegaScout algorithm
+
