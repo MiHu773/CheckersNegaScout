@@ -1,7 +1,7 @@
 # Checkers with NegaScout algorithm
 
 
-##How NegaScout works:
+## How NegaScout works:
  
  NegaScout algorithm assumes that first explored move is the best one. That is why we are sorting each child of node by it's heuristic value. If we make the assumption we can search other nodes with null window, because it is faster than normal alpha-beta. However, if this search fails we have to decide wether to search it again with the proper window or not. After that searches we have to make the search over the "best" move. 
 
