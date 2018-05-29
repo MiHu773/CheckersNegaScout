@@ -61,7 +61,7 @@ class NegaScout {
       if (index == 0) -ns(nodes(0), depth - 1, -b, -a, -color)
       else {
         val scoreTemp = -ns(nodes(index), depth - 1, -a - 1, -a, -color)
-        if (a < scoreTemp && scoreTemp < b) -ns(nodes(0), depth - 1, -b, -scoreTemp, -color)
+        if (a < scoreTemp && scoreTemp < b) -ns(nodes(index), depth - 1, -b, -scoreTemp, -color)
         else scoreTemp
       }
     }
