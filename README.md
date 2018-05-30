@@ -33,16 +33,19 @@ To avoid using for loop countScoreForEach function needs to be implemented as ta
   }
 ````
 
-````
-Opis działania programu:
+
+# Opis działania programu:
 Na początku program wyświetla plansze i zestaw możliwych ruchów. Gdzie:
+
+````
 „x” – białe piony
 „o” – czarne piony
 „X” – biała damka
 „O” – czarna damka
 „-” – puste pole
+````
+
 Po wyświetleniu planszy wyświetlona zostaje lista ruchów w formie List(44 33, 46 37, 51 42, 53 42, 71 60, 73 64, 75 64, 75 66, 77 66) – gdzie pierwsza współrzędna reprezentuje położenie pionka, którym możemy wykonać ruch, a następne pola, na które można wykonać ruchy. Aby wykonać ruch należy wprowadzić jeden z ciągów cyfr. W przypadku błędu, program powiadomi o niepoprawnym wprowadzeniu danych. Program wyświetla tylko możliwe ruchy, w zgodzie z zasadą przymusowego bicia. Po wykonaniu ruchu, przeciwnik wykonuje ruch.
 
-Zasady Gry:
+# Zasady Gry:
 Celem jest zbicie wszystkich pionów przeciwnika, lub doprowadzenie go do sytuacji kiedy nie może wykonać ruchu. Bicia są obowiązkowe i wymagają przeskoczenia pionka przeciwnika. Bicia można łączyć w sekwencje. Pionek staje się damką gdy skończy turę na ostatnim polu (pierwszym polu przeciwnika). Damka może wykonywać ruch o dowolną odległość, w dowolnym kierunku po skosie, po wykonaniu pierwszego bicia zachowuje się jak pionek(może łączyć bicia), aż do zakończenia tury.
-````
