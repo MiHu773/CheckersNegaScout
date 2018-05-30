@@ -16,7 +16,6 @@ After displaying the board, the program displays a list of movements in the form
 ## Game rules:
 The goal is to capture all opponent's checkers, or bring him to a position in which he can't  make any move. Checkers can only move diagonally. Beatings are mandatory, and to take out an opponents checker it is needed to jump over it to an empty field behind it. When a player jumps over their opponent's (the other player's) piece, you take that piece from the board. The beatings are combined into sets of moves. A man becomes a king when it finishes it's move in the back rank. It is possible that a clear and steady breakup with others. Kings can move to squares diagonally at any distance. However after starting to takeout opponent's pieces they behave as a normal man, until they end their turn.
 
-
 ## How NegaScout works:
  
  NegaScout algorithm assumes that first explored move is the best one. That is why we are sorting each child of node by it's heuristic value. If we make the assumption we can search other nodes with null window, because it is faster than normal alpha-beta. However, if this search fails we have to decide wether to search it again with the proper window or not. After that searches we have to make the search over the "best" move. 
