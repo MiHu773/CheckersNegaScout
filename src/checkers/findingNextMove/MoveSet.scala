@@ -211,7 +211,6 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
     Array(MNLFunc, MNRFunc)
   }
 
-
   /**
     * Creates a new MoveSet, in the new position determined by move.
     * @return List of MoveSets
@@ -336,7 +335,6 @@ class MoveSet(element: Element, board: Board, lastMove: Move = null /*, nextRow 
           Type.black,
           Type.blackQueen
         )
-
     }
   }
 }
