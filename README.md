@@ -4,8 +4,8 @@
 At the beginning, the program displays the board and a set of possible movements. Where:
 
 ````
-"X" - white men
-"O" - black men
+"x" - white men
+"o" - black men
 "X" - white king
 "O" - black king
 "-" - empty space
