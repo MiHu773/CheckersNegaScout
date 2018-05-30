@@ -3,13 +3,13 @@
 
 At the beginning, the program displays the board and a set of possible movements. Where:
 
-`` ``
+````
 "X" - white men
 "O" - black men
 "X" - white king
 "O" - black king
 "-" - empty space
-`` ``
+````
 
 After displaying the board, the program displays a list of movements in the form of a List for example: (44 33, 46 37, 51 42, 53 42, 71 60, 73 64, 75 64, 75 66, 77 66) where the first coordinates represent the checker on the starting field. The coordinates are: first number row rank, second number: column rank. Next coordinates are the next move locations. For example, traffic associated with one of a string of numbersTo move, you have to select and input one of the possible listed moves. In the event of an error, the program will notify you of an incorrect entry of data. The program displays only the results of moves, according to the principle of forced beating. After moving, the opponent's makes his move.
 
